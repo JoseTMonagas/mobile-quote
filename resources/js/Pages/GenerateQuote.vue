@@ -81,6 +81,12 @@
                     </span>
                     <span class="flex mt-4">
                         <button
+                            class="bg-green-800 text-white rounded px-3 py-2"
+                            @click="onClickReset"
+                        >
+                            Generate
+                        </button>
+                        <button
                             class="bg-gray-800 text-white rounded px-3 py-2"
                             @click="onClickReset"
                         >
