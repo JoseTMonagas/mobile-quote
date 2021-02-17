@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeviceForm;
 use App\Models\Device;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,11 +21,9 @@ class DeviceController extends Controller
                     return [
                         'id' => $device->id,
                         'name' => $device->name,
-                        'company' => $device->company,
-                        'edit_url' => route('device.edit', $device)
+                        'company' => $device->company
                     ];
                 }),
-            'create_url' => route('device.create'),
         ]);
     }
 
@@ -35,7 +34,7 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Devices/CreateEdit');
     }
 
     /**
@@ -44,9 +43,13 @@ class DeviceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(DeviceForm $request)
     {
-        //
+        $image = $request->file('image')->store('devices', 'public');
+        $formData = $request->validated();
+        $formData["image"] = $image;
+        $device = Device::create($formData);
+        return response()->json($device, 201);
     }
 
     /**
@@ -68,7 +71,10 @@ class DeviceController extends Controller
      */
     public function edit(Device $device)
     {
-        //
+        return Inertia::render('Devices/CreateEdit', [
+            "device" => $device,
+            "storeUrl" => route("device.update", $device),
+        ]);
     }
 
     /**
@@ -78,9 +84,22 @@ class DeviceController extends Controller
      * @param  \App\Models\Device  $device
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Device $device)
+    public function update(DeviceForm $request, Device $device)
     {
-        //
+        $formData = $request->validated();
+        if ($request->has("image")) {
+            $image = $request->file('image')->store('devices', 'public');
+            $formData["image"] = $image;
+        } else {
+            unset($formData["image"]);
+        }
+
+        if ($device->update($formData)) {
+            return response()->json($device, 201);
+        } else {
+            return response("ERROR", 500);
+        }
+        
     }
 
     /**
@@ -91,6 +110,11 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        //
+        if ($device->delete()) {
+            return response('OK', 200);
+        } else {
+            return response("ERROR", 500);
+        }
+
     }
 }
