@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DeviceForm;
 use App\Models\Device;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DeviceController extends Controller
@@ -40,7 +39,7 @@ class DeviceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\DeviceForm  $request
      * @return \Illuminate\Http\Response
      */
     public function store(DeviceForm $request)
@@ -73,14 +72,13 @@ class DeviceController extends Controller
     {
         return Inertia::render('Devices/CreateEdit', [
             "device" => $device,
-            "storeUrl" => route("device.update", $device),
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\DeviceForm  $request
      * @param  \App\Models\Device  $device
      * @return \Illuminate\Http\Response
      */
