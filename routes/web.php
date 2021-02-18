@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\IssueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,8 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 })->name('dashboard');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::resource("device", DeviceController::class);
+    Route::resource("device", DeviceController::class)->except(["show"]);
+    Route::resource("issues", IssueController::class)->except(["show"]);
 });
 
 Route::inertia("/landing", "GenerateQuote");
