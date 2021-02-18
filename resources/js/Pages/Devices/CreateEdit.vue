@@ -2,7 +2,7 @@
     <app-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Devices: {{ formType.label }}
+                Devices: {{ formType }}
             </h2>
         </template>
 
@@ -11,9 +11,7 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <form-section @submitted="onFormSubmit">
                         <template #title>
-                            <strong class="p-3"
-                                >{{ formType.label }} Device</strong
-                            >
+                            <strong class="p-3">{{ formType }} Device</strong>
                         </template>
                         <template #description>
                             <nav-link
@@ -82,10 +80,6 @@ export default {
         "x-input": Input
     },
     props: {
-        storeUrl: {
-            type: String,
-            required: true
-        },
         device: {
             type: Object,
             required: false,
@@ -96,23 +90,19 @@ export default {
         if (this.device !== null) {
             this.name = this.device.name;
             this.company = this.device.company;
-            this.image = this.device.image;
         }
     },
     computed: {
         formType: function() {
             if (this.device !== null) {
-                return {
-                    label: "Edit",
-                    route: this.$route("device.update", this.device.id),
-                    method: "put"
-                };
+                return "Edit";
             }
-            return {
-                label: "Create",
-                route: this.$route("device.store"),
-                method: "post"
-            };
+            return "Create";
+        },
+        requestUrl: function() {
+            return this.device !== null
+                ? this.$route("device.update", this.device.id)
+                : this.$route("device.store");
         }
     },
     data: () => {
@@ -126,23 +116,25 @@ export default {
         cleanForm() {
             this.name = "";
             this.company = "";
-            this.image = "";
         },
         onFormSubmit() {
-            const method = this.formType.method;
-            const url = this.formType.route;
-            let data = new FormData();
-            data.append("name", this.name);
-            data.append("company", this.company);
-            data.append("image", this.image);
-            axios({
-                method,
-                url,
-                data,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            })
+            let formData = new FormData();
+            formData.append("name", this.name);
+            formData.append("company", this.company);
+
+            if (this.image !== "") {
+                formData.append("image", this.image);
+            }
+
+            if (this.device !== null) {
+                formData.append("_method", "put");
+            }
+            axios
+                .post(this.requestUrl, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                })
                 .catch(error => {
                     if (error.response) {
                         // The request was made and the server responded with a status code
@@ -171,13 +163,15 @@ export default {
                     }
                 })
                 .then(response => {
-                    Swal.fire({
-                        title: "Device saved successfully",
-                        icon: "success",
-                        text: `Device Name: ${response.data.name}\n
+                    if (response.status >= 200 && response.status < 400) {
+                        Swal.fire({
+                            title: "Device saved successfully",
+                            icon: "success",
+                            text: `Device Name: ${response.data.name}\n
                                 Device Company: ${response.data.company}`
-                    });
-                    this.cleanForm();
+                        });
+                        this.cleanForm();
+                    }
                 });
         }
     }
