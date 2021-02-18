@@ -24,24 +24,28 @@
                                 <jet-nav-link
                                     :href="route('dashboard')"
                                     :active="route().current('dashboard')"
+                                    id="dashboard-link"
                                 >
                                     Dashboard
                                 </jet-nav-link>
                                 <jet-nav-link
                                     :href="route('device.index')"
                                     :active="route().current('device.index')"
+                                    id="device-link"
                                 >
                                     Devices
                                 </jet-nav-link>
                                 <jet-nav-link
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    :href="route('issues.index')"
+                                    :active="route().current('issues.index')"
+                                    id="issue-link"
                                 >
                                     Issues
                                 </jet-nav-link>
                                 <jet-nav-link
                                     :href="route('dashboard')"
                                     :active="route().current('dashboard')"
+                                    id="report-link"
                                 >
                                     Reports
                                 </jet-nav-link>

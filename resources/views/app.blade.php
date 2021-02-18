@@ -18,6 +18,7 @@
         <!-- Scripts -->
         @routes
         <script src="//code.iconify.design/1/1.0.6/iconify.min.js" defer></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script src="{{ mix('js/app.js') }}" defer></script>
     </head>
     <body class="font-sans antialiased">
