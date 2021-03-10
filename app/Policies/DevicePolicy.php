@@ -41,7 +41,7 @@ class DevicePolicy
      */
     public function create(User $user)
     {
-        return $user->role == 'OWNER';
+        return $user->role == 'OWNER' || $user->role == 'ADMIN';
     }
 
     /**
@@ -53,7 +53,16 @@ class DevicePolicy
      */
     public function update(User $user, Device $device)
     {
-        return $user->role == 'OWNER';
+        if ($device->isDirty('base_price')) {
+
+            if ($user->role != "OWNER") {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
