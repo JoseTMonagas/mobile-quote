@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Device;
+use App\Models\Issue;
+use App\Policies\DevicePolicy;
+use App\Policies\IssuePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,7 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Device::class => DevicePolicy::class,
+        Issue::class => IssuePolicy::class,
     ];
 
     /**
@@ -24,7 +29,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        //
     }
 }

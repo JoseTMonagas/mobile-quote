@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DeviceForm;
 use App\Models\Device;
+use App\Models\Issue;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DeviceController extends Controller
@@ -16,14 +18,18 @@ class DeviceController extends Controller
     public function index()
     {
         return Inertia::render('Devices/Index', [
-            'devices' => Device::all()->map(function (Device $device) {
-                    return [
-                        'id' => $device->id,
-                        'name' => $device->name,
-                        'company' => $device->company
-                    ];
-                }),
+            'devices' => Device::all()
         ]);
+    }
+
+    /**
+     * Return a list of the resources
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        return response()->json(Device::all()->load('issues'));
     }
 
     /**
@@ -33,7 +39,9 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Devices/CreateEdit');
+        return Inertia::render('Devices/CreateEdit', [
+            'issueList' => Issue::all(),
+        ]);
     }
 
     /**
@@ -72,6 +80,7 @@ class DeviceController extends Controller
     {
         return Inertia::render('Devices/CreateEdit', [
             "device" => $device,
+            'issueList' => Issue::all(),
         ]);
     }
 
@@ -97,7 +106,6 @@ class DeviceController extends Controller
         } else {
             return response("ERROR", 500);
         }
-        
     }
 
     /**
@@ -113,6 +121,58 @@ class DeviceController extends Controller
         } else {
             return response("ERROR", 500);
         }
+    }
 
+    /**
+     * Display a table for the current deductions to Device's issues
+     *
+     * @param \App\Models\Device $device
+     * @return \Illuminate\Http\Response
+     */
+    public function issuesTable(Device $device)
+    {
+        $current = $device->issues;
+        $issues = [];
+        foreach (Issue::all() as $issue) {
+            $row = [
+                "issue" => $issue,
+                "deduction" => null,
+            ];
+            if ($current->contains($issue)) {
+                $deduction = $current->firstWhere('id', $issue->id);
+                $row['deduction'] = $deduction->pivot->deduction;
+            }
+            $issues[] = $row;
+        }
+
+        return Inertia::render('Devices/Issues', [
+            'device' => $device,
+            'issueList' => $issues
+        ]);
+    }
+
+    /**
+     * Updates issues list and deduction for a Device
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Device $device
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function issues(Request $request, Device $device)
+    {
+        $issues = collect($request->input("issues"));
+
+        $issues = $issues->mapWithKeys(function ($issue) {
+            return [
+                $issue["issue"]["id"] => [
+                    "deduction" => $issue["deduction"]
+                ]
+            ];
+        });
+
+        $device->issues()->sync($issues);
+
+        return response()->json("OK", 200);
     }
 }

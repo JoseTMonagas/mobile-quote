@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'email' => 'test@email.com',
+            'role' => 'OWNER'
         ]);
         $this->call([
             DeviceSeeder::class,
-            IssueSeeder::class,
         ]);
     }
 }

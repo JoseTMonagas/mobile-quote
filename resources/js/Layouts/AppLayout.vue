@@ -43,8 +43,15 @@
                                     Issues
                                 </jet-nav-link>
                                 <jet-nav-link
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    :href="route('users.index')"
+                                    :active="route().current('users.index')"
+                                    id="issue-link"
+                                >
+                                    Users
+                                </jet-nav-link>
+                                <jet-nav-link
+                                    :href="route('reports.show')"
+                                    :active="route().current('reports.show')"
                                     id="report-link"
                                 >
                                     Reports

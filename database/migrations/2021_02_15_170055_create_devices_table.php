@@ -15,9 +15,15 @@ class CreateDevicesTable extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("company");
+            $table->string("model");
+            $table->string("brand");
             $table->string("image");
+            $table->unsignedFloat("base_price");
+            $table->unsignedFloat("store_price")->nullable();
+            $table->unsignedFloat("excellent_factor");
+            $table->unsignedFloat("good_factor");
+            $table->unsignedFloat("acceptable_factor");
+            $table->unsignedFloat("broken_factor");
             $table->softDeletes();
             $table->timestamps();
         });

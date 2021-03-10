@@ -2,7 +2,7 @@
     <app-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Devices: {{ formType }}
+                Users: {{ formType }}
             </h2>
         </template>
 
@@ -11,12 +11,12 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <form-section @submitted="onFormSubmit">
                         <template #title>
-                            <strong class="p-3">{{ formType }} Device</strong>
+                            <strong class="p-3">{{ formType }} User</strong>
                         </template>
                         <template #description>
                             <nav-link
                                 class="ml-2 mt-1"
-                                :href="$route('device.index')"
+                                :href="$route('users.index')"
                             >
                                 <span
                                     class="iconify"
@@ -27,74 +27,40 @@
                             </nav-link>
                         </template>
                         <template #form>
-                            <label for="name">Model:</label>
+                            <label for="name">Name:</label>
                             <x-input
                                 class="col-span-2"
                                 v-model="name"
                             ></x-input>
-                            <label for="company">Brand:</label>
+
+                            <label for="email">Email:</label>
                             <x-input
                                 class="col-span-2"
-                                v-model="company"
+                                v-model="email"
                             ></x-input>
 
-                            <label class="col-span-2" for="base_price"
-                                >Base Price:</label
-                            >
+                            <label for="password">Password:</label>
                             <x-input
-                                class="col-span-1"
-                                v-model="basePrice"
-                            ></x-input>
-
-                            <label class="col-span-2" for="excellent"
-                                >Excellent Deduction:</label
-                            >
-                            <x-input
-                                class="col-span-1"
-                                v-model="excellent"
-                            ></x-input>
-
-                            <label class="col-span-2" for="good"
-                                >Good Deduction:</label
-                            >
-                            <x-input
-                                class="col-span-1"
-                                v-model="good"
-                            ></x-input>
-
-                            <label class="col-span-2" for="acceptable"
-                                >Acceptable Deduction:</label
-                            >
-                            <x-input
-                                class="col-span-1"
-                                v-model="acceptable"
-                            ></x-input>
-
-                            <label class="col-span-2" for="broken"
-                                >Broken Deduction:</label
-                            >
-                            <x-input
-                                class="col-span-1"
-                                v-model="broken"
-                            ></x-input>
-
-                            <span class="col-span-3"></span>
-
-                            <label for="image">Image:</label>
-                            <input
-                                type="file"
-                                name="image"
                                 class="col-span-2"
-                                @change="image = $event.target.files[0]"
-                            />
-                            <img v-if="image" :src="image" alt="" />
+                                v-model="password"
+                                type="password"
+                            ></x-input>
+
+                            <label for="confirm-password"
+                                >Confirm Password:</label
+                            >
+                            <x-input
+                                class="col-span-2"
+                                v-model="confirmPassword"
+                                type="password"
+                            ></x-input>
                         </template>
                         <template #actions>
                             <section class="flex flex-row justify-around">
                                 <x-button
                                     class="mx-2"
                                     type="reset"
-                                    @click="onClickReset"
+                                    @click="cleanForm"
                                     >Reset</x-button
                                 >
                                 <x-button class="mx-2">Save</x-button>
@@ -113,93 +79,62 @@ import NavLink from "@/Jetstream/NavLink";
 import FormSection from "@/Jetstream/FormSection";
 import Button from "@/Jetstream/Button";
 import Input from "@/Jetstream/Input";
-import vSelect from "vue-select";
-
-import "vue-select/dist/vue-select.css";
 
 export default {
     components: {
         AppLayout,
         NavLink,
         FormSection,
-        "v-select": vSelect,
         "x-button": Button,
         "x-input": Input
     },
     props: {
-        device: {
+        userEdit: {
             type: Object,
             required: false,
             default: null
-        },
-        issueList: {
-            type: Array,
-            required: true
         }
     },
     created() {
-        this.onClickReset();
+        if (this.userEdit !== null) {
+            this.name = this.userEdit.name;
+            this.email = this.userEdit.email;
+        }
     },
     computed: {
         formType: function() {
-            return this.device !== null ? "Edit" : "Create";
+            return this.userEdit !== null ? "Edit" : "Create";
         },
         requestUrl: function() {
-            return this.device !== null
-                ? this.$route("device.update", this.device.id)
-                : this.$route("device.store");
+            return this.userEdit !== null
+                ? this.$route("users.update", this.userEdit.id)
+                : this.$route("users.store");
         }
     },
     data: () => {
         return {
             name: "",
-            company: "",
-            image: "",
-            basePrice: "",
-            excellent: "",
-            good: "",
-            acceptable: "",
-            broken: ""
+            email: "",
+            password: "",
+            confirmPassword: ""
         };
     },
     methods: {
-        onClickReset() {
-            if (this.device !== null) {
-                this.name = this.device.model;
-                this.company = this.device.brand;
-                this.basePrice = this.device.base_price;
-                this.excellent = this.device.excellent_factor;
-                this.good = this.device.good_factor;
-                this.acceptable = this.device.acceptable_factor;
-                this.broken = this.device.broken_factor;
-                this.image = this.device.image;
-            } else {
-                this.name = "";
-                this.company = "";
-                this.basePrice = "";
-                this.excellent = "";
-                this.good = "";
-                this.acceptable = "";
-                this.broken = "";
-            }
+        cleanForm() {
+            this.name = "";
+            this.email = "";
         },
         onFormSubmit() {
             let formData = new FormData();
-            formData.append("model", this.name);
-            formData.append("brand", this.company);
-            formData.append("base_price", this.basePrice);
-            formData.append("excellent_factor", this.excellent);
-            formData.append("good_factor", this.good);
-            formData.append("acceptable_factor", this.acceptable);
-            formData.append("broken_factor", this.broken);
+            formData.append("name", this.name);
+            formData.append("password", this.password);
+            formData.append("password_confirmation", this.confirmPassword);
+            formData.append("email", this.email);
 
-            if (this.image !== "") {
-                formData.append("image", this.image);
-            }
-
-            if (this.device !== null) {
+            if (this.userEdit !== null) {
                 formData.append("_method", "put");
             }
+
             axios
                 .post(this.requestUrl, formData, {
                     headers: {
@@ -236,12 +171,11 @@ export default {
                 .then(response => {
                     if (response.status >= 200 && response.status < 400) {
                         Swal.fire({
-                            title: "Device saved successfully",
+                            title: "User saved successfully",
                             icon: "success",
-                            text: `Device Name: ${response.data.name}\n
-                                Device Company: ${response.data.company}`
+                            text: `User Name: ${response.data.name}`
                         });
-                        this.onClickReset();
+                        this.cleanForm();
                     }
                 });
         }

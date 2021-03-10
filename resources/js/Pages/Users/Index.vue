@@ -2,7 +2,7 @@
     <app-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Devices: Index
+                Users: Index
             </h2>
         </template>
 
@@ -11,25 +11,25 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <nav-link
                         class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                        :href="$route('device.create')"
+                        :href="$route('users.create')"
                         >CREATE NEW</nav-link
                     >
-                    <x-table :headers="headers" :items="devices">
+                    <x-table :headers="headers" :items="users">
                         <template #actions="{ item }">
                             <nav-link
                                 class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                                :href="$route('device.issuesTable', item.id)"
-                                >ISSUES</nav-link
+                                :href="$route('users.changeRole', item.id)"
+                                >ROLE</nav-link
                             >
                             <nav-link
                                 class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                                :href="$route('device.edit', item.id)"
+                                :href="$route('users.edit', item.id)"
                                 >EDIT</nav-link
                             >
                             <button
                                 class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
                                 @click="
-                                    onDelete($route('device.destroy', item.id))
+                                    onDelete($route('users.destroy', item.id))
                                 "
                             >
                                 DELETE
@@ -56,7 +56,7 @@ export default {
         "x-button": Button
     },
     props: {
-        devices: {
+        users: {
             type: Array,
             required: true
         }
@@ -64,8 +64,9 @@ export default {
     data: () => {
         return {
             headers: [
-                { text: "Model", value: "model" },
-                { text: "Brand", value: "brand" },
+                { text: "Name", value: "name" },
+                { text: "Email", value: "email" },
+                { text: "Role", value: "role" },
                 { text: "Actions", value: "actions" }
             ]
         };

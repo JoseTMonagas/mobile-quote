@@ -27,6 +27,16 @@ class IssueController extends Controller
     }
 
     /**
+     * Return a list of the resources
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
+    {
+        return response()->json(Issue::all());
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

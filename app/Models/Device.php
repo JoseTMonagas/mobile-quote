@@ -11,5 +11,18 @@ class Device extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ["name", "company", "image"];
+    protected $fillable = [
+        "model", "brand", "image", "base_price", "excellent_factor",
+        "good_factor", "acceptable_factor", "broken_factor",
+    ];
+
+    /**
+    * Many to Many relationship with Issues
+    * @return Illuminate\Support\Collection
+    */
+    public function issues()
+    {
+        return $this->belongsToMany(Issue::class)
+                    ->withPivot("deduction");
+    }
 }

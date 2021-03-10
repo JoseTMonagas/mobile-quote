@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeviceForm extends FormRequest
+class QuoteForm extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,9 @@ class DeviceForm extends FormRequest
     public function rules()
     {
         return [
-            'model' => 'required|alpha_num',
-            'brand' => 'required',
-            'image' => 'sometimes|image'
+            'device_id' => 'required|exists:devices,id',
+            'value' => 'required',
+            'issues' => 'sometimes',
         ];
     }
 }

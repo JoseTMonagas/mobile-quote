@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Actions\Fortify\PasswordValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeviceForm extends FormRequest
+class UserForm extends FormRequest
 {
+    use PasswordValidationRules;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,9 +29,10 @@ class DeviceForm extends FormRequest
     public function rules()
     {
         return [
-            'model' => 'required|alpha_num',
-            'brand' => 'required',
-            'image' => 'sometimes|image'
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'password' => $this->passwordRules(),
         ];
+            
     }
 }

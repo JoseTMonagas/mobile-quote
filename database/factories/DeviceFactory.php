@@ -22,9 +22,14 @@ class DeviceFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->colorName,
-            'company' => $this->faker->company,
-            'image' => $this->faker->imageUrl()
+            'model' => $this->faker->colorName,
+            'brand' => $this->faker->company,
+            'image' => $this->faker->imageUrl(),
+            'base_price' => $this->faker->randomNumber(4),
+            'excellent_factor' => $this->faker->randomNumber(2),
+            'good_factor' => $this->faker->randomNumber(2),
+            'acceptable_factor' => $this->faker->randomNumber(2),
+            'broken_factor' => $this->faker->randomNumber(2),
         ];
     }
 }

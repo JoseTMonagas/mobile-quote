@@ -2,25 +2,26 @@
 
 namespace Tests\Browser;
 
+use App\Models\Device;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
-use Tests\Browser\Pages\Login;
 use Tests\DuskTestCase;
 
 class DeviceTest extends DuskTestCase
 {
+    use DatabaseMigrations;
+
     public function testIndex() {
         $user = User::factory()->create();
 
+        $device = Device::factory()->create();
+
         $this->browse(function ($browser) use ($user) {
             $browser
-                ->visit(new Login)
-                ->type('@email', $user->email)
-                ->type('@password', 'password')
-                ->press('@submit')
-                ->on()
-                ->assertPathIs('/dashboard');
+                ->loginAs(User::find(1))
+                ->visit();
         });
+
     }
 }

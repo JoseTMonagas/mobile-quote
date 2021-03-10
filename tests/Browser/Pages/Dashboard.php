@@ -35,7 +35,10 @@ class Dashboard extends Page
     public function elements()
     {
         return [
-            '@dashboard-link' => '',
+            '@dashboard-link' => '#dashboard-link',
+            '@device-link' => '#device-link',
+            '@issue-link' => '#issue-link',
+            '@report-link' => '#report-link',
         ];
     }
 }

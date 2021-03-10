@@ -10,15 +10,16 @@
                     <v-select
                         v-model="device"
                         name="device"
-                        :options="['Canada', 'United States']"
+                        :options="devices"
+                        label="model"
+                        @input="onDeviceInput"
                     >
                         <template v-slot:option="option">
                             <main class="flex flex-row align-center">
-                                <img
-                                    src="https://via.placeholder.com/150"
-                                    alt=""
-                                />
-                                <strong class="ml-3">{{ option.label }}</strong>
+                                <img :src="option.image" alt="" class="w-40" />
+                                <strong class="ml-3">{{
+                                    option.brand + option.model
+                                }}</strong>
                             </main>
                         </template>
                     </v-select>
@@ -70,22 +71,22 @@
                                 multiple
                                 v-model="issues"
                                 name="device"
-                                :options="['Canada', 'United States']"
+                                :options="issuesList"
+                                label="name"
                             ></v-select>
                         </aside>
                     </section>
                     <span class="mt-4 border-t">
-                        <h2 class="text-2xl mt-3">
-                            $ Placeholder
-                        </h2>
+                        <h2 class="text-2xl mt-3">$ {{ quote }}</h2>
                     </span>
                     <span class="flex mt-4">
                         <button
                             class="bg-green-800 text-white rounded px-3 py-2"
-                            @click="onClickReset"
+                            @click="onClickGenerate"
                         >
                             Generate
                         </button>
+
                         <button
                             class="bg-gray-800 text-white rounded px-3 py-2"
                             @click="onClickReset"
@@ -112,18 +113,75 @@ export default {
         "v-select": vSelect,
         "v-radio": Radio
     },
+    created() {
+        this.getDevices();
+    },
     data: () => {
         return {
+            devices: [],
             device: "",
             condition: "",
-            issues: []
+            issuesList: [],
+            issues: [],
+            quote: 0
         };
     },
     methods: {
+        getDevices() {
+            axios.get(this.$route("devices.list")).then(resp => {
+                this.devices = resp.data;
+            });
+        },
+        calculateQuote() {
+            let base = this.device.base_price;
+            if (this.device.store_price > 0) {
+                base = this.device.store_price;
+            }
+            let factor = 0;
+            let issues = 0;
+            switch (this.condition) {
+                case "EXCELLENT":
+                    factor = this.device.excellent_factor;
+                    break;
+                case "GOOD":
+                    factor = this.device.good_factor;
+                    break;
+                case "ACCEPTABLE":
+                    factor = this.device.acceptable_factor;
+                    break;
+                case "BROKEN":
+                    factor = this.device.broken_factor;
+                    issues = this.issues.reduce(issue => {
+                        return issue.pivot.deduction;
+                    });
+                    break;
+            }
+
+            return base - factor - issues;
+        },
+        onDeviceInput() {
+            this.issuesList = this.device.issues;
+        },
         onClickReset() {
             this.device = "";
             this.condition = "";
             this.issues = [];
+            this.quote = 0;
+        },
+        onClickGenerate() {
+            this.quote = this.calculateQuote();
+            const device_id = this.device.id;
+            const condition = this.condition;
+            const issues = this.issues;
+            const value = this.quote;
+            axios
+                .post(this.$route("quote.generate"), {
+                    device_id,
+                    condition,
+                    issues,
+                    value
+                })
+                .then(resp => console.log(resp));
         }
     }
 };
