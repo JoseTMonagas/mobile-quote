@@ -15,10 +15,7 @@ class UserForm extends FormRequest
      */
     public function authorize()
     {
-        if ('APP_DEBUG') {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -33,6 +30,5 @@ class UserForm extends FormRequest
             'email' => 'required|string|email|max:255',
             'password' => $this->passwordRules(),
         ];
-            
     }
 }

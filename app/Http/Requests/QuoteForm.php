@@ -13,10 +13,7 @@ class QuoteForm extends FormRequest
      */
     public function authorize()
     {
-        if ('APP_DEBUG') {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
