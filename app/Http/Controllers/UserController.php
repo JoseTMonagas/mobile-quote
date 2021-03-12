@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserForm;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -40,6 +41,10 @@ class UserController extends Controller
     public function store(UserForm $request)
     {
         $user = User::create($request->validated());
+        if (Auth::user()->role == "ADMIN") {
+            $stores = Auth::user()->stores->pluck("id");
+            $user->stores->attach($stores);
+        }
         return response()->json($user, 201);
     }
 
@@ -107,6 +112,13 @@ class UserController extends Controller
 
     public function updateRole(Request $request, User $user)
     {
-        return response()->json();
+        $newRole = $request->role;
+        $user->role = $newRole;
+        $user->save();
+        return response()->json("OK");
+    }
+
+    public function updateStore(Request $request, User $user)
+    {
     }
 }
