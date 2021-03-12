@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $this->call([
             DeviceSeeder::class,
+            StoreSeeder::class,
         ]);
     }
 }
