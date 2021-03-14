@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreForm;
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -93,5 +94,34 @@ class StoreController extends Controller
         $store->delete();
 
         return response()->json("OK", 200);
+    }
+
+    /**
+     * Lists the Users in that Store
+     * @param \App\Models\Store $store
+     * @return \Illuminate\Http\Response
+     */
+    public function listUsers(Store $store)
+    {
+        $userList = User::all()->merge($store->users);
+        return Inertia::render("Stores/Users", [
+            "userList" => $userList,
+            "store" => $store,
+        ]);
+    }
+
+    /**
+     * Updates Store Users
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Store $store
+     * @return \Illuminate\Http\Response
+     */
+    public function users(Request $request, Store $store)
+    {
+        $users = collect($request->users)->pluck("id");
+
+        $store->users()->sync($users);
+
+        return response()->json("OK");
     }
 }
