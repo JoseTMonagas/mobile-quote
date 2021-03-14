@@ -16,6 +16,7 @@ class CreateQuotesTable extends Migration
         Schema::create('quotes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('device_id')->constrained();
+            $table->foreignId("user_id")->constrained();
             $table->unsignedFloat('value');
             $table->softDeletes();
             $table->timestamps();

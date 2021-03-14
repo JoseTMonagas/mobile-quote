@@ -18,6 +18,7 @@ class CreateStoresTable extends Migration
             $table->string("name");
             $table->string("address");
             $table->string("email");
+            $table->unsignedInteger("price_percent")->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

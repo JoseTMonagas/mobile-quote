@@ -12,7 +12,7 @@ class Quote extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ["device_id", "value"];
+    protected $fillable = ["user_id", "device_id", "value"];
 
     /**
      * Many to Many relationship with issues
@@ -23,9 +23,33 @@ class Quote extends Model
         return $this->belongsToMany(Issue::class);
     }
 
-    /** A Device may have many quotes */
+    /**
+      A Device may have many quotes
+      @return Collection
+     */
     public function device()
     {
         return $this->belongsTo(Device::class);
+    }
+
+
+    /**
+     * An User may have many quotes
+     * @return Collection
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function getStorePriceAttribute()
+    {
+        $storePercent = 0;
+        if ($this->user->stores->count() > 0) {
+            $storePercent = $this->user->stores->first()->pluck("price_percent");
+        }
+
+        return $this->device->base_price
+            + ($this->device->base_price * $storePercent);
     }
 }

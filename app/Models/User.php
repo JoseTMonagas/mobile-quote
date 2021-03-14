@@ -64,6 +64,6 @@ class User extends Authenticatable
      */
     public function stores()
     {
-        return $this->belongsToMany(Store::class);
+        return $this->belongsToMany(Store::class)->withTimestamps();
     }
 }
