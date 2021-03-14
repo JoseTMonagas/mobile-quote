@@ -1,12 +1,10 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 use App\Http\Controllers\DeviceController;
-use App\Http\Controllers\GenerateQuote;
 use App\Http\Controllers\IssueController;
+use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
@@ -22,20 +20,17 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get("/", [QuoteController::class, "create"])
+        ->name("quotes.create");
+    Route::get("quote/{quote}/receipt", [QuoteController::class, "receipt"])
+        ->name("quotes.receipt");
+    Route::post("quote", [QuoteController::class, "store"])
+        ->name('quotes.store');
+
+
+    Route::inertia("dashboard", "Dashboard")->name("dashboard");
 
     Route::resource("device", DeviceController::class)
         ->except(["show"]);
@@ -61,6 +56,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::resource("stores", StoreController::class)->except(["show"]);
 
+    Route::get("stores/{store}/users", [StoreController::class, "listUsers"])->name("stores.usersList");
+    Route::post("stores/{store}/users", [StoreController::class, "users"])->name("stores.users");
+
     Route::resource("users", UserController::class)->except(["show"]);
 
     Route::get(
@@ -79,10 +77,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     )->name("reports.show");
 
 
-    Route::post('/quote', GenerateQuote::class)->name('quote.generate');
 
     Route::post('reports', [ReportController::class, 'generate'])
         ->name('reports.generate');
 });
-
-Route::inertia("/landing", "GenerateQuote");

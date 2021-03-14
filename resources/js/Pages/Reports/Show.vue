@@ -73,6 +73,7 @@ export default {
 
             headers: [
                 { text: "Date", value: "date" },
+                { text: "Store", value: "store" },
                 { text: "Device", value: "device" },
                 { text: "Issues", value: "issues" },
                 { text: "Value", value: "value" }
@@ -109,27 +110,27 @@ export default {
                 .post(this.$route("reports.generate"), { start, end })
                 .catch(error => {
                     if (error.response) {
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx
+                        let textMsg = "";
+                        if (error.status < 500) {
+                            textMsg = "User input error";
+                        } else {
+                            textMsg = "Server error";
+                        }
                         Swal.fire({
                             title: "An Error has ocurred!",
-                            text: error.response.data,
+                            text: textMsg,
                             icon: "error"
                         });
                     } else if (error.request) {
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js
                         Swal.fire({
                             title: "An Error has ocurred!",
-                            text: error.request,
+                            text: "Response timeout",
                             icon: "error"
                         });
                     } else {
-                        // Something happened in setting up the request that triggered an Error
                         Swal.fire({
                             title: "An Error has ocurred!",
-                            text: error.message,
+                            text: "Configuration error contact your webmaster",
                             icon: "error"
                         });
                     }
