@@ -115,27 +115,30 @@ export default {
                 })
                 .catch(error => {
                     if (error.response) {
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx
+                        let textMsg = "";
+                        if (error.response.status < 500) {
+                            let errors = error.response.data.errors;
+                            for (const error in errors) {
+                                textMsg += errors[error] + "\n";
+                            }
+                        } else {
+                            textMsg = "Server error";
+                        }
                         Swal.fire({
                             title: "An Error has ocurred!",
-                            text: error.response.data,
+                            html: `<pre>${textMsg}</pre>`,
                             icon: "error"
                         });
                     } else if (error.request) {
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js
                         Swal.fire({
                             title: "An Error has ocurred!",
-                            text: error.request,
+                            text: "Response timeout",
                             icon: "error"
                         });
                     } else {
-                        // Something happened in setting up the request that triggered an Error
                         Swal.fire({
                             title: "An Error has ocurred!",
-                            text: error.message,
+                            text: "Configuration error contact your webmaster",
                             icon: "error"
                         });
                     }

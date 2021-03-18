@@ -148,14 +148,17 @@ export default {
                 .catch(error => {
                     if (error.response) {
                         let textMsg = "";
-                        if (error.status < 500) {
-                            textMsg = "User input error";
+                        if (error.response.status < 500) {
+                            let errors = error.response.data.errors;
+                            for (const error in errors) {
+                                textMsg += errors[error] + "\n";
+                            }
                         } else {
                             textMsg = "Server error";
                         }
                         Swal.fire({
                             title: "An Error has ocurred!",
-                            text: textMsg,
+                            html: `<pre>${textMsg}</pre>`,
                             icon: "error"
                         });
                     } else if (error.request) {
