@@ -24,9 +24,14 @@ class DeviceForm extends FormRequest
     public function rules()
     {
         return [
-            'model' => 'required|alpha_num',
+            'model' => 'required',
             'brand' => 'required',
-            'image' => 'sometimes|image'
+            'image' => 'sometimes|image',
+            "base_price" => "required",
+            "excellent_factor" => "required",
+            "good_factor" => "required",
+            "acceptable_factor" => "required",
+            "broken_factor" => "required",
         ];
     }
 }
