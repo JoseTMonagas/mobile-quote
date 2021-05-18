@@ -48,7 +48,7 @@
                             ></x-input>
 
                             <label class="col-span-2" for="price_percent"
-                                >Price Increase (%):</label
+                                >Price Decrease (%):</label
                             >
                             <x-input
                                 class="col-span-1"
@@ -125,15 +125,15 @@ export default {
         cleanForm() {
             this.name = "";
             this.email = "";
-            this.adress = "";
+            this.address = "";
             this.price_percent = 0;
         },
         onFormSubmit() {
             let formData = new FormData();
             formData.append("name", this.name);
-            formData.append("address", this.adress);
+            formData.append("address", this.address);
             formData.append("email", this.email);
-            formData.append("price_percent", this.email);
+            formData.append("price_percent", this.price_percent);
 
             if (this.storeEdit !== null) {
                 formData.append("_method", "put");

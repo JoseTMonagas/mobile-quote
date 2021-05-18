@@ -21,7 +21,7 @@ class Issue extends Model
     public function devices()
     {
         return $this->belongsToMany(Device::class)
-                    ->withPivot("deduction");
+            ->withPivot("deduction");
     }
 
 
@@ -31,6 +31,6 @@ class Issue extends Model
      */
     public function quotes()
     {
-        return $this->belongsToMany(Quote::class);
+        return $this->belongsToMany(Quote::class)->withPivot("deduction");
     }
 }

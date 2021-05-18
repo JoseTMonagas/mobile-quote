@@ -26,7 +26,8 @@ class StoreForm extends FormRequest
         return [
             "name" => "required",
             "email" => "required",
-            "address" => "required"
+            "address" => "required",
+            "price_percent" => "required",
         ];
     }
 }

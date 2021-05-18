@@ -17,7 +17,7 @@ class CreateDevicesTable extends Migration
             $table->id();
             $table->string("model");
             $table->string("brand");
-            $table->string("image");
+            $table->string("image")->nullable();
             $table->unsignedFloat("base_price");
             $table->unsignedFloat("excellent_factor");
             $table->unsignedFloat("good_factor");

@@ -30,6 +30,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         ->name('quotes.store');
 
 
+    Route::get("dashboard", function () {
+        return redirect()->route("quotes.create");
+    });
+
     Route::inertia("dashboard", "Dashboard")->name("dashboard");
 
     Route::resource("device", DeviceController::class)

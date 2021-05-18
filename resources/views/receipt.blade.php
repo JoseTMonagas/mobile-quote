@@ -16,9 +16,9 @@
     </head>
     <body class="font-sans antialiased">
         <div class="row">
-                <b>
-                    REFRESHMOBILE
-                </b>
+            <b>
+                REFRESHMOBILE
+            </b>
         </div>
         <div class="row">
             <div class="col-12">
@@ -32,7 +32,7 @@
                 {{ str_pad($quote->id, 6, "0", STR_PAD_LEFT) }}
             </div>
         </div>
-                
+        
         <hr />
         <table class="table table-striped pb-4">
             <thead>
@@ -53,29 +53,42 @@
             </tbody>
         </table>
         @if($quote->issues->count() > 0)
-            <table class="table table-striped pb-4">
-                <thead>
-                    <tr>
-                        <th scope="col">ISSUES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($quote->issues as $issue)
-                        <tr>
-                            <td>
-                                {{ $issue->name  }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-span-6 offset-md-6">
+                    <table class="table table-striped pb-4">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-right">ISSUES</th>
+                                <th scope="col" class="text-right">DEDUCTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($quote->issues as $issue)
+                                <tr>
+                                    <td class="text-right">
+                                        {{ $issue->name  }}
+                                    </td>
+                                    <td class="text-right">
+                                        $ {{ number_format($issue->pivot->deduction, 2)  }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         @endif
-        <table class="table table-striped pb-4">
-            <tr>
-                <th scope="row" class="text-right">Total:</th>
-                <td>
-                    $ {{ number_format($quote->value, 2)  }}</td>
-            </tr>
-        </table>
+        <div class="row">
+            <div class="col-span-4 offset-md-8">
+                <table class="table table-striped pb-4">
+                    <tr>
+                        <td class="text-right">
+                            <b>Total:</b>
+                            $ {{ number_format($quote->value, 2)  }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </body>
 </html>

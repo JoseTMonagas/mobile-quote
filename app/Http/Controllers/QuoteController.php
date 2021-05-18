@@ -19,12 +19,13 @@ class QuoteController extends Controller
     public function create()
     {
         $storePercent = 0;
-        if (Auth::user()->stores->count()) {
+        if (Auth::user()->stores->count() > 0) {
             $storePercent = Auth::user()
                 ->stores
                 ->first()
-                ->pluck("price_percent");
+                ->price_percent;
         }
+
 
         return Inertia::render("GenerateQuote", [
             "storePercent" => $storePercent,
@@ -42,11 +43,16 @@ class QuoteController extends Controller
         $form = $request->validated();
         $user = Auth::user();
         $form["user_id"] = $user->id;
+
+        $issues = collect($form["issues"])->mapWithKeys(function ($issue) {
+            return [$issue["id"] => [
+                "deduction" => $issue["pivot"]["deduction"] ?? 0,
+            ]];
+        });
         $quote = Quote::create($form);
-        $issues = collect($form["issues"])->pluck("id");
 
         if ($issues->count() > 0) {
-            $quote->issues()->attach($issues);
+            $quote->issues()->attach($issues->toArray());
         }
 
         return response()->json($quote, 201);

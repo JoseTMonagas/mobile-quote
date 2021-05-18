@@ -59,7 +59,7 @@
                 </tr>
             </thead>
             <tbody class="w-full">
-                <tr class="w-full border-b" v-for="(row, index) in getRows">
+                <tr class="w-full border-b" v-if="getRows.length > 0" v-for="(row, index) in getRows">
                     <td
                         class="p-1 text-left"
                         v-for="(header, index) in headers"
@@ -68,6 +68,8 @@
                             {{ row[header.value] }}
                         </slot>
                     </td>
+                </tr>
+                <tr v-else>
                 </tr>
             </tbody>
         </table>

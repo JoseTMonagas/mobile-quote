@@ -15,9 +15,17 @@
                         </template>
                         <template #form>
                             <label for="start">Start Date:</label>
-                            <input type="date" v-model="start" />
+                            <input
+                                class="col-span-2"
+                                type="date"
+                                v-model="start"
+                            />
                             <label for="end">End Date:</label>
-                            <input type="date" v-model="end" />
+                            <input
+                                class="col-span-2"
+                                type="date"
+                                v-model="end"
+                            />
                         </template>
                         <template #actions>
                             <section class="flex flex-row justify-around">
@@ -137,6 +145,14 @@ export default {
                 })
                 .then(response => {
                     if (response.status >= 200 && response.status < 400) {
+                        if (response.data === []) {
+                            Swal.fire({
+                                title: "No data",
+                                icon: "warning",
+                                text:
+                                    "There wasn't any quote found in this date period."
+                            });
+                        }
                         this.report = response.data;
                     }
                 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreForm;
 use App\Models\Store;
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -76,7 +77,7 @@ class StoreController extends Controller
      * @param  \App\Models\Store  $store
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Store $store)
+    public function update(StoreForm $request, Store $store)
     {
         $store->update($request->validated());
 

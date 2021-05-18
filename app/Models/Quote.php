@@ -20,7 +20,7 @@ class Quote extends Model
      */
     public function issues()
     {
-        return $this->belongsToMany(Issue::class);
+        return $this->belongsToMany(Issue::class)->withPivot("deduction");
     }
 
     /**

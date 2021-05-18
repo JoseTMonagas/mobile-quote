@@ -22,13 +22,6 @@
                                 class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex"
                             >
                                 <jet-nav-link
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                    id="dashboard-link"
-                                >
-                                    Dashboard
-                                </jet-nav-link>
-                                <jet-nav-link
                                     :href="route('quotes.create')"
                                     :active="route().current('quotes.create')"
                                     id="dashboard-link"
@@ -36,6 +29,10 @@
                                     Quote Generator
                                 </jet-nav-link>
                                 <jet-nav-link
+                                    v-if="
+                                        userRole == 'ADMIN' ||
+                                            userRole == 'OWNER'
+                                    "
                                     :href="route('device.index')"
                                     :active="route().current('device.index')"
                                     id="device-link"
@@ -43,6 +40,10 @@
                                     Devices
                                 </jet-nav-link>
                                 <jet-nav-link
+                                    v-if="
+                                        userRole == 'ADMIN' ||
+                                            userRole == 'OWNER'
+                                    "
                                     :href="route('issues.index')"
                                     :active="route().current('issues.index')"
                                     id="issue-link"

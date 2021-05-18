@@ -27,18 +27,26 @@ class ReportController extends Controller
             ["created_at", "<=", $end],
         ]);
 
-        if (Auth::user()->role != "OWNER") {
-            $usersId = [];
-            if (Auth::user()->stores->count() > 0) {
-                $usersId = Auth::user()
-                    ->stores
-                    ->load("users")
-                    ->pluck("users")
-                    ->flatten()
-                    ->pluck("id");
-            }
+        $store = Auth::user()->stores->first();
+        $ids = $store->users->pluck("id");
 
-            $quotes->whereIn("user_id", $usersId);
+        if (Auth::user()->role != "OWNER") {
+
+            switch (Auth::user()->role) {
+                case "ADMIN":
+                    $store = Auth::user()->stores->first();
+                    $ids = $store->users->pluck("id");
+                    $quotes->whereIn("user_id", $ids->toArray());
+                    break;
+                case "USER":
+                    $quotes->whereIn("user_id", [Auth::id()]);
+                    break;
+                case "OWNER":
+                    break;
+                default:
+                    abort(403, 'Unauthorized.');
+                    break;
+            }
         }
 
         $quotes = $quotes->get();
@@ -46,7 +54,7 @@ class ReportController extends Controller
 
         $response = $quotes->map(function ($quote) {
             return [
-                "date" => $quote->created_at,
+                "date" => date('d-m-Y H:i', strtotime($quote->created_at)),
                 "store" => $quote->user->first()->stores->first()->name ?? "No Store assigned",
                 "device" => $quote->device->model,
                 "issues" => $quote->issues->pluck('name')->join(', '),

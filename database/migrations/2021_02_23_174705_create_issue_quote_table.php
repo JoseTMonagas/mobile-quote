@@ -17,7 +17,7 @@ class CreateIssueQuoteTable extends Migration
             $table->id();
             $table->foreignId('issue_id')->constrained();
             $table->foreignId('quote_id')->constrained();
-            $table->timestamps();
+            $table->unsignedFloat("deduction");
         });
     }
 

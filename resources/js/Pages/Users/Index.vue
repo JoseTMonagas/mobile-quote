@@ -91,7 +91,6 @@ export default {
                                 // that falls out of the range of 2xx
                                 Swal.fire({
                                     title: "An Error has ocurred!",
-                                    text: error.response.data,
                                     icon: "error"
                                 });
                             } else if (error.request) {
@@ -100,14 +99,12 @@ export default {
                                 // http.ClientRequest in node.js
                                 Swal.fire({
                                     title: "An Error has ocurred!",
-                                    text: error.request,
                                     icon: "error"
                                 });
                             } else {
                                 // Something happened in setting up the request that triggered an Error
                                 Swal.fire({
                                     title: "An Error has ocurred!",
-                                    text: error.message,
                                     icon: "error"
                                 });
                             }

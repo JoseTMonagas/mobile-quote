@@ -34,7 +34,7 @@
                                                 class="w-40"
                                             />
                                             <strong class="ml-3">{{
-                                                option.brand + option.model
+                                                `${option.model} ${option.brand}`
                                             }}</strong>
                                         </main>
                                     </template>
@@ -44,7 +44,7 @@
                                 >
                                     <main>
                                         <label for="condition"
-                                            >Select your device's
+                                            >Please select the device's cosmetic
                                             condition:</label
                                         >
                                         <v-radio
@@ -54,7 +54,7 @@
                                             name="condition"
                                             text="EXCELLENT"
                                             label="Excellent"
-                                            help="The device is as good as new"
+                                            help="The device is in Like New condition, without any signs of previous usage."
                                         ></v-radio>
                                         <v-radio
                                             class="my-2"
@@ -63,7 +63,7 @@
                                             name="condition"
                                             text="GOOD"
                                             label="Good"
-                                            help="The device has no noticeable defects"
+                                            help="The device shows some signs of normal usage, but is free of deep scratches and scuffs."
                                         ></v-radio>
                                         <v-radio
                                             class="my-2"
@@ -72,25 +72,13 @@
                                             name="condition"
                                             text="ACCEPTABLE"
                                             label="Acceptable"
-                                            help="The device shows some wear but works fine"
-                                        ></v-radio>
-                                        <v-radio
-                                            class="my-2"
-                                            :value="condition"
-                                            @change="condition = $event"
-                                            name="condition"
-                                            text="BROKEN"
-                                            label="Broken"
-                                            help="The device has broken components that difficults it's usage"
+                                            help="The device shows heavier signs of wear on the body and/or screen."
                                         ></v-radio>
                                     </main>
-                                    <aside
-                                        class="mt-4 md:mt-0"
-                                        v-if="condition == 'BROKEN'"
-                                    >
-                                        <label for=""
-                                            >Select your device's issues:</label
-                                        >
+                                    <aside class="mt-4 md:mt-0 flex flex-col">
+                                        <label for="">
+                                            Select any issue(s) the device has:
+                                        </label>
                                         <v-select
                                             multiple
                                             v-model="issues"
@@ -98,24 +86,43 @@
                                             :options="issuesList"
                                             label="name"
                                         ></v-select>
+                                        <small class="text-gray-500">
+                                            In order to get the most accurate
+                                            quote, please select any issue(s)
+                                            the device has from the dropdown
+                                            list above. (ie; Cracked Screen,
+                                            Broken Camera etc).
+                                        </small>
+                                        <small class="text-gray-500">
+                                            Failure to disclose any issues can
+                                            result in an adjusted quote or
+                                            device rejection.
+                                        </small>
                                     </aside>
                                 </section>
                                 <span class="mt-4 border-t">
                                     <h2 class="text-2xl mt-3">$ {{ quote }}</h2>
                                 </span>
-                                <span class="flex mt-4">
+                                <span class="flex justify-center mt-4">
                                     <button
-                                        class="bg-green-800 text-white rounded px-3 py-2"
+                                        class="bg-gray-800 text-white rounded-r-none rounded px-3 py-2 hover:bg-gray-300 hover:text-gray-800"
+                                        @click="onClickReset"
+                                    >
+                                        Reset
+                                    </button>
+
+                                    <button
+                                        class="bg-green-800 text-white rounded-r-none rounded-l-none rounded px-3 py-2 hover:bg-green-300 hover:text-gray-800"
                                         @click="onClickGenerate"
                                     >
                                         Generate
                                     </button>
 
                                     <button
-                                        class="bg-gray-800 text-white rounded px-3 py-2"
-                                        @click="onClickReset"
+                                        class="bg-blue-800 text-white rounded-l-none rounded px-3 py-2 hover:bg-blue-300 hover:text-gray-800"
+                                        @click="onClickConfirm"
                                     >
-                                        Reset
+                                        Confirm
                                     </button>
                                 </span>
                             </section>
@@ -170,29 +177,30 @@ export default {
             });
         },
         calculateQuote() {
-            let base = this.device.base_price;
-            let storeCut = base * this.storePercent;
+            const base = this.device.base_price;
             let factor = 0;
             let issues = 0;
-            switch (this.condition) {
-                case "EXCELLENT":
-                    factor = this.device.excellent_factor;
-                    break;
-                case "GOOD":
-                    factor = this.device.good_factor;
-                    break;
-                case "ACCEPTABLE":
-                    factor = this.device.acceptable_factor;
-                    break;
-                case "BROKEN":
-                    factor = this.device.broken_factor;
-                    issues = this.issues.reduce(issue => {
-                        return issue.pivot.deduction;
-                    });
-                    break;
+            if (
+                ["EXCELLENT", "GOOD", "ACCEPTABLE", "BROKEN"].includes(
+                    this.condition
+                )
+            ) {
+                const condition = this.condition.toLowerCase();
+                const index = `${condition}_factor`;
+                if (Number.isFinite(this.device[index])) {
+                    factor = this.device[index];
+                }
             }
 
-            return base + storeCut - factor - issues;
+            if (this.issues.length > 0) {
+                for (const issue in this.issues) {
+                    issues += this.issues[issue].pivot.deduction;
+                }
+            }
+
+            const preStore = base - factor - issues;
+            const storeCut = preStore * (this.storePercent / 100);
+            return preStore - storeCut;
         },
         onDeviceInput() {
             this.issuesList = this.device.issues;
@@ -205,6 +213,9 @@ export default {
         },
         onClickGenerate() {
             this.quote = this.calculateQuote();
+        },
+        onClickConfirm() {
+            this.quote = this.calculateQuote();
             const device_id = this.device.id;
             const condition = this.condition;
             const issues = this.issues;
@@ -212,7 +223,6 @@ export default {
             axios
                 .post(this.$route("quotes.store"), {
                     device_id,
-                    condition,
                     issues,
                     value
                 })
