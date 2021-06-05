@@ -51,7 +51,10 @@
                                     Issues
                                 </jet-nav-link>
                                 <jet-nav-link
-                                    v-if="userRole == 'OWNER'"
+                                    v-if="
+                                        userRole == 'ADMIN' ||
+                                            userRole == 'OWNER'
+                                    "
                                     :href="route('stores.index')"
                                     :active="route().current('stores.index')"
                                     id="issue-link"
