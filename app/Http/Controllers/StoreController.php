@@ -18,8 +18,17 @@ class StoreController extends Controller
      */
     public function index()
     {
+        $stores = [];
+        if (Auth::user()->role == "OWNER") {
+            $stores = Store::all();
+        }
+
+        if (Auth::user()->role == "ADMIN") {
+            $stores = Auth::user()->stores;
+        }
+
         return Inertia::render("Stores/Index", [
-            "stores" => Store::all(),
+            "stores" => $stores,
         ]);
     }
 
