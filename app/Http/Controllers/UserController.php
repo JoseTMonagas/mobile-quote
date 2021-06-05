@@ -59,7 +59,7 @@ class UserController extends Controller
 
         if (Auth::user()->role == "ADMIN") {
             $stores = Auth::user()->stores->pluck("id");
-            $user->stores->attach($stores);
+            $user->stores()->attach($stores);
         }
         return response()->json($user, 201);
     }
@@ -125,7 +125,8 @@ class UserController extends Controller
     public function changeRole(User $user)
     {
         return Inertia::render('Users/Roles', [
-            "userEdit" => $user
+            "userEdit" => $user,
+            "currentUserRole" => Auth::user()->role,
         ]);
     }
 

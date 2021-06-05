@@ -42,7 +42,11 @@
                                 class="border-gray-300 bg-gray-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 v-model="role"
                             >
-                                <option value="OWNER">Owner</option>
+                                <option
+                                    v-if="currentUserRole == 'OWNER'"
+                                    value="OWNER"
+                                    >Owner</option
+                                >
                                 <option value="ADMIN">Admin</option>
                                 <option value="USER">User</option>
                             </select>
@@ -83,6 +87,10 @@ export default {
     props: {
         userEdit: {
             type: Object,
+            required: true
+        },
+        currentUserRole: {
+            type: String,
             required: true
         }
     },
