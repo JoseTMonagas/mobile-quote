@@ -178,6 +178,7 @@ export default {
         },
         calculateQuote() {
             const base = this.device.base_price;
+            const storeCut = base * (this.storePercent / 100);
             let factor = 0;
             let issues = 0;
             if (
@@ -198,9 +199,8 @@ export default {
                 }
             }
 
-            const preStore = base - factor - issues;
-            const storeCut = preStore * (this.storePercent / 100);
-            return preStore - storeCut;
+            const preStore = base - factor;
+            return Math.round(preStore - storeCut - issues);
         },
         onDeviceInput() {
             this.issuesList = this.device.issues;
