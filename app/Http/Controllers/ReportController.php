@@ -55,7 +55,9 @@ class ReportController extends Controller
         $response = $quotes->map(function ($quote) {
             return [
                 "date" => date('d-m-Y H:i', strtotime($quote->created_at)),
-                "store" => $quote->user->first()->stores->first()->name ?? "No Store assigned",
+                "store" => $quote->user->stores->first()->name ?? "No Store assigned",
+                "user" => $quote->user->name,
+                "base_price" => "{$quote->device->base_price}$",
                 "device" => $quote->device->model,
                 "issues" => $quote->issues->pluck('name')->join(', '),
                 "value" => "{$quote->value}$",

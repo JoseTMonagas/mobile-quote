@@ -82,7 +82,9 @@ export default {
             headers: [
                 { text: "Date", value: "date" },
                 { text: "Store", value: "store" },
+                { text: "User", value: "user" },
                 { text: "Device", value: "device" },
+                { text: "Base Price", value: "base_price" },
                 { text: "Issues", value: "issues" },
                 { text: "Value", value: "value" },
                 { text: "Serial #", value: "serial_ref" },
@@ -105,8 +107,6 @@ export default {
             };
 
             workbook.SheetNames.push("Report");
-
-            let worksheet = XLSX.utils.json_to_sheet(this.report);
 
             workbook.Sheets["Report"] = worksheet;
 
