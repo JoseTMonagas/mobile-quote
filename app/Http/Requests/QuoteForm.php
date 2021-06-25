@@ -26,6 +26,8 @@ class QuoteForm extends FormRequest
         return [
             'device_id' => 'required|exists:devices,id',
             'value' => 'required',
+            'serial_ref' => 'sometimes',
+            'internal_ref' => 'sometimes',
             'issues' => 'sometimes',
         ];
     }

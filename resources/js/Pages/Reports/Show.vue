@@ -84,7 +84,9 @@ export default {
                 { text: "Store", value: "store" },
                 { text: "Device", value: "device" },
                 { text: "Issues", value: "issues" },
-                { text: "Value", value: "value" }
+                { text: "Value", value: "value" },
+                { text: "Serial #", value: "serial_ref" },
+                { text: "Internal #", value: "internal_ref" }
             ],
             report: []
         };
@@ -109,7 +111,6 @@ export default {
             workbook.Sheets["Report"] = worksheet;
 
             XLSX.writeFile(workbook, "Report.xlsx");
-            console.log("Done");
         },
         onFormSubmit() {
             const start = this.start;
@@ -154,6 +155,7 @@ export default {
                             });
                         }
                         this.report = response.data;
+                        console.log(this.report);
                     }
                 });
         }

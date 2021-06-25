@@ -58,7 +58,9 @@ class ReportController extends Controller
                 "store" => $quote->user->first()->stores->first()->name ?? "No Store assigned",
                 "device" => $quote->device->model,
                 "issues" => $quote->issues->pluck('name')->join(', '),
-                "quote" => $quote->value,
+                "value" => "{$quote->value}$",
+                "serial_ref" => $quote->serial_ref,
+                "internal_ref" => $quote->internal_ref,
             ];
         });
 

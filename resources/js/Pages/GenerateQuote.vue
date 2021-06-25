@@ -131,11 +131,59 @@
                 </div>
             </div>
         </div>
+        <dialog-modal :show="dlgConfirmation">
+            <template #title>
+                You're generating a new quote for
+                {{ quote }}$
+            </template>
+            <template #content>
+                <div class="flex flex-col">
+                    <div class="inline-flex flex-row">
+                        <label for="serialNumber">Serial #:</label>
+                        <x-input v-model="serialNumber"></x-input>
+
+                        <label class="ml-3" for="serialNumber"
+                            >Internal #:</label
+                        >
+                        <x-input v-model="internalNumber"></x-input>
+                    </div>
+                    <div class="inline-flex flex-row  items-center my-3">
+                        <x-checkbox v-model="accountRemoved"></x-checkbox>
+                        <label for="accountRemoved"
+                            >iCloud/Android account removed *</label
+                        >
+                        <small v-if="!accountRemoved" class="text-red-700"
+                            >You must check this box!</small
+                        >
+                    </div>
+                    <div class="inline-flex flex-row items-center">
+                        <x-checkbox v-model="factoryReset"></x-checkbox>
+                        <label for="factoryReset">Factory Reset *</label>
+                        <small v-if="!factoryReset" class="text-red-700"
+                            >You must check this box!</small
+                        >
+                    </div>
+                </div>
+            </template>
+            <template #footer>
+                <div class="flex flex-col justify-center">
+                    <button
+                        class="bg-blue-800 text-white rounded px-3 py-2 hover:bg-blue-300 hover:text-gray-800"
+                        @click="onClickFinish"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </template>
+        </dialog-modal>
     </app-layout>
 </template>
 <script>
 import AppLayout from "@/Layouts/AppLayout";
 import vSelect from "vue-select";
+import Input from "@/Jetstream/Input";
+import Checkbox from "@/Jetstream/Checkbox";
+import DialogModal from "@/Jetstream/DialogModal.vue";
 import "vue-select/dist/vue-select.css";
 
 import Radio from "../Partials/Radio.vue";
@@ -143,6 +191,9 @@ import Radio from "../Partials/Radio.vue";
 export default {
     components: {
         AppLayout,
+        DialogModal,
+        "x-input": Input,
+        "x-checkbox": Checkbox,
         "v-select": vSelect,
         "v-radio": Radio
     },
@@ -166,7 +217,12 @@ export default {
             condition: "",
             issuesList: [],
             issues: [],
-            quote: 0
+            quote: 0,
+            serialNumber: "",
+            internalNumber: "",
+            accountRemoved: false,
+            factoryReset: false,
+            dlgConfirmation: false
         };
     },
 
@@ -200,7 +256,7 @@ export default {
             }
 
             const preStore = base - factor;
-            return Math.round(preStore - storeCut - issues);
+            return Math.round(preStore - storeCut - issues).toFixed(0);
         },
         onDeviceInput() {
             this.issuesList = this.device.issues;
@@ -210,25 +266,49 @@ export default {
             this.condition = "";
             this.issues = [];
             this.quote = 0;
+            this.serialNumber = "";
+            this.internalNumber = "";
+            this.accountRemoved = false;
+            this.factoryReset = false;
         },
         onClickGenerate() {
             this.quote = this.calculateQuote();
         },
         onClickConfirm() {
             this.quote = this.calculateQuote();
+            this.dlgConfirmation = true;
+        },
+        onClickFinish() {
+            if (!this.accountRemoved || !this.factoryReset) {
+                return;
+            }
+
             const device_id = this.device.id;
             const condition = this.condition;
             const issues = this.issues;
             const value = this.quote;
+            const serial_ref = this.serialNumber;
+            const internal_ref = this.internalNumber;
             axios
                 .post(this.$route("quotes.store"), {
                     device_id,
                     issues,
-                    value
+                    value,
+                    serial_ref,
+                    internal_ref
                 })
                 .then(resp => {
-                    window.open(this.$route("quotes.receipt", 1), "_blank");
+                    const quote_id = resp.data.id;
+                    if (Number.isInteger(quote_id) && quote_id > 0) {
+                        window.open(
+                            this.$route("quotes.receipt", quote_id),
+                            "_blank"
+                        );
+                    }
                 });
+
+            this.onClickReset();
+            this.dlgConfirmation = false;
         }
     }
 };

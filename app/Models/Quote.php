@@ -12,7 +12,7 @@ class Quote extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ["user_id", "device_id", "value"];
+    protected $fillable = ["user_id", "device_id", "value", "serial_ref", "internal_ref"];
 
     /**
      * Many to Many relationship with issues
