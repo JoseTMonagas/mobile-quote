@@ -11,7 +11,7 @@ class Store extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ["name", "address", "email"];
+    protected $fillable = ["name", "address", "email", "header", "footer", "logo"];
 
     /**
      * A Store can have many Users

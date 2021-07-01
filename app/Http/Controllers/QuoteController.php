@@ -60,7 +60,20 @@ class QuoteController extends Controller
 
     public function receipt(Quote $quote)
     {
-        $pdf = PDF::loadView("receipt", compact("quote"))
+        $store = $quote->user->stores->first();
+        $header = null;
+        $footer = null;
+        $logo = null;
+        if ($store) {
+            $header = $store->header;
+            $footer = $store->footer;
+            if (!is_null($store->logo)) {
+                $logo = base64_encode(file_get_contents(storage_path() . "/app/" . $store->logo));
+            }
+        }
+
+
+        $pdf = PDF::loadView("receipt", compact("quote", "header", "footer", "logo"))
             ->setOptions([
                 'defaultFont' => 'sans-serif',
                 'isRemoteEnabled' => 'true',

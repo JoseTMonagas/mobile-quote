@@ -62,6 +62,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get("stores/{store}/users", [StoreController::class, "listUsers"])->name("stores.usersList");
     Route::post("stores/{store}/users", [StoreController::class, "users"])->name("stores.users");
+    Route::put("stores/{store}/receipt", [StoreController::class, "storeReceiptSettings"])->name("stores.storeReceiptSettings");
 
     Route::resource("users", UserController::class)->except(["show"]);
 

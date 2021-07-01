@@ -6,7 +6,8 @@
             </h2>
         </template>
 
-        <div class="py-12">
+        <!-- STORE CREATE/EDIT -->
+        <div class="py-12" v-if="storeEdit">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <form-section @submitted="onFormSubmit">
@@ -70,6 +71,47 @@
                 </div>
             </div>
         </div>
+
+        <!-- RECEIPT HEADER/FOOTER -->
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <form-section @submitted="onSaveReceipt">
+                        <template #title>
+                            <strong class="p-3">Receipt Settings</strong>
+                        </template>
+                        <template #form>
+                            <label class="col-span-6" for="header"
+                                >Header:</label
+                            >
+                            <wysiwyg
+                                class="col-span-6"
+                                v-model="header"
+                            ></wysiwyg>
+                            <label class="col-span-6" for="footer"
+                                >Footer:</label
+                            >
+                            <wysiwyg
+                                class="col-span-6"
+                                v-model="footer"
+                            ></wysiwyg>
+
+                            <label class="col-span-1" for="logo">Logo:</label>
+                            <input
+                                type="file"
+                                class="col-span-5"
+                                @input="logo = $event.target.files[0]"
+                            />
+                        </template>
+                        <template #actions>
+                            <section class="flex flex-row justify-around">
+                                <x-button class="mx-2">Save</x-button>
+                            </section>
+                        </template>
+                    </form-section>
+                </div>
+            </div>
+        </div>
     </app-layout>
 </template>
 
@@ -101,6 +143,8 @@ export default {
             this.email = this.storeEdit.email;
             this.address = this.storeEdit.address;
             this.price_percent = this.storeEdit.price_percent;
+            this.header = this.storeEdit.header;
+            this.footer = this.storeEdit.footer;
         }
     },
     computed: {
@@ -118,7 +162,10 @@ export default {
             name: "",
             email: "",
             address: "",
-            price_percent: 0
+            price_percent: 0,
+            header: "",
+            footer: "",
+            logo: null
         };
     },
     methods: {
@@ -183,6 +230,62 @@ export default {
                             text: `Store Name: ${response.data.name}`
                         });
                         this.cleanForm();
+                    }
+                });
+        },
+        onSaveReceipt() {
+            const route = this.$route(
+                "stores.storeReceiptSettings",
+                this.storeEdit.id
+            );
+            const formData = new FormData();
+            formData.append("_method", "put");
+            formData.append("header", this.header);
+            formData.append("footer", this.footer);
+            formData.append("logo", this.logo);
+
+            axios
+                .post(route, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                })
+                .catch(error => {
+                    if (error.response) {
+                        let textMsg = "";
+                        if (error.response.status < 500) {
+                            let errors = error.response.data.errors;
+                            for (const error in errors) {
+                                textMsg += errors[error] + "\n";
+                            }
+                        } else {
+                            textMsg = "Server error";
+                        }
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            html: `<pre>${textMsg}</pre>`,
+                            icon: "error"
+                        });
+                    } else if (error.request) {
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: "Response timeout",
+                            icon: "error"
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: "Configuration error contact your webmaster",
+                            icon: "error"
+                        });
+                    }
+                })
+                .then(response => {
+                    if (response.status >= 200 && response.status < 400) {
+                        Swal.fire({
+                            title: "Receipt settings saved successfully",
+                            icon: "success"
+                        });
                     }
                 });
         }

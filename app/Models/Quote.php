@@ -41,15 +41,4 @@ class Quote extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    public function getStorePriceAttribute()
-    {
-        $storePercent = 0;
-        if ($this->user->stores->count() > 0) {
-            $storePercent = $this->user->stores->first()->pluck("price_percent");
-        }
-
-        return $this->device->base_price
-            + ($this->device->base_price * $storePercent);
-    }
 }

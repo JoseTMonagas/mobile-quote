@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReceiptForm;
 use App\Http\Requests\StoreForm;
 use App\Models\Store;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class StoreController extends Controller
@@ -131,6 +133,39 @@ class StoreController extends Controller
         $users = collect($request->users)->pluck("id");
 
         $store->users()->sync($users);
+
+        return response()->json("OK");
+    }
+
+    /**
+     * Saves Store Receipt settings
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Store $store
+     * @return \Illuminate\Http\Response
+     */
+    public function storeReceiptSettings(ReceiptForm $request, Store $store)
+    {
+        $settings = $request->validated();
+        $has_header = Arr::exists($settings, "header");
+        $has_footer = Arr::exists($settings, "footer");
+        $has_logo = Arr::exists($settings, "logo");
+
+        if ($has_header) {
+            $store->header = $settings["header"];
+        }
+
+        if ($has_footer) {
+            $store->footer = $settings["footer"];
+        }
+
+        if ($has_logo) {
+            $logo = $settings["logo"]->store("logos");
+            $store->logo = $logo;
+        }
+
+        if ($has_header || $has_footer || $has_logo) {
+            $store->save();
+        }
 
         return response()->json("OK");
     }

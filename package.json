@@ -29,6 +29,7 @@
     "dependencies": {
         "v-tooltip": "^3.0.0-alpha.21",
         "vue-select": "^3.11.2",
+        "vue-wysiwyg": "^1.7.2",
         "vuejs-datatable": "^2.0.0-alpha.7",
         "xlsx": "^0.16.9"
     }

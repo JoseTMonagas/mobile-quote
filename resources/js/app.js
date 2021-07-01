@@ -2,6 +2,7 @@ require("./bootstrap");
 
 // Import modules...
 import Vue from "vue";
+import wysiwyg from "vue-wysiwyg";
 import {
     App as InertiaApp,
     plugin as InertiaPlugin
@@ -11,6 +12,7 @@ import PortalVue from "portal-vue";
 Vue.mixin({ methods: { route } });
 Vue.use(InertiaPlugin);
 Vue.use(PortalVue);
+Vue.use(wysiwyg, { hideModules: { image: true } });
 
 const app = document.getElementById("app");
 

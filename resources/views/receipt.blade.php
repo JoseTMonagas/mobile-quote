@@ -17,11 +17,13 @@
 </head>
 
 <body class="font-sans antialiased">
+    @isset($logo)
     <div class="row">
-        <b>
-            REFRESHMOBILE
-        </b>
+        <div class="col-12">
+            <img src="data:image/png;base64,{{ $logo }}" alt="" style="max-width:6rem" />
+        </div>
     </div>
+    @endif
     <div class="row">
         <div class="col-12">
             <b>Date: </b>
@@ -34,22 +36,25 @@
             {{ str_pad($quote->id, 6, "0", STR_PAD_LEFT) }}
         </div>
     </div>
+    @isset($header)
+    <div class="row">
+        <div class="col-12">
+            {!! $header !!}
+        </div>
+    </div>
+    @endif
 
     <hr />
     <table class="table table-striped pb-4">
         <thead>
             <tr>
                 <th class="text-right" scope="col">DEVICE</th>
-                <th class="text-right" scope="col">BASE PRICE</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td class="text-right">
                     {{ $quote->device->model  }}
-                </td>
-                <td class="text-right">
-                    $ {{ number_format($quote->storePrice, 0)  }}
                 </td>
             </tr>
         </tbody>
@@ -92,6 +97,14 @@
             </table>
         </div>
     </div>
+
+    @isset($footer)
+    <div class="row">
+        <div class="col-12">
+            {!! $footer !!}
+        </div>
+    </div>
+    @endif
 </body>
 
 </html>
