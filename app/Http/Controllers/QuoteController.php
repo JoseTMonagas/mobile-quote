@@ -19,10 +19,9 @@ class QuoteController extends Controller
     public function create()
     {
         $storePercent = 0;
-        if (Auth::user()->stores->count() > 0) {
+        if (Auth::user()->store) {
             $storePercent = Auth::user()
-                ->stores
-                ->first()
+                ->store
                 ->price_percent;
         }
 
@@ -60,7 +59,7 @@ class QuoteController extends Controller
 
     public function receipt(Quote $quote)
     {
-        $store = $quote->user->stores->first();
+        $store = $quote->user->store;
         $header = null;
         $footer = null;
         $logo = null;

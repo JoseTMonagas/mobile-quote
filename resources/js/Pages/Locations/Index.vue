@@ -2,7 +2,7 @@
     <app-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Stores: Index
+                Locations: Index
             </h2>
         </template>
 
@@ -11,27 +11,27 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <nav-link
                         class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                        :href="$route('stores.create')"
+                        :href="$route('stores.locations.create', store.id)"
                         >CREATE NEW</nav-link
                     >
-                    <x-table :headers="headers" :items="stores">
+                    <x-table :headers="headers" :items="locations">
                         <template #actions="{ item }">
                             <nav-link
                                 class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                                :href="
-                                    $route('stores.locations.index', item.id)
-                                "
-                                >LOCATIONS</nav-link
+                                :href="$route('locations.usersList', item.id)"
+                                >USERS</nav-link
                             >
                             <nav-link
                                 class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                                :href="$route('stores.edit', item.id)"
+                                :href="$route('locations.edit', item.id)"
                                 >EDIT</nav-link
                             >
                             <button
                                 class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
                                 @click="
-                                    onDelete($route('stores.destroy', item.id))
+                                    onDelete(
+                                        $route('locations.destroy', item.id)
+                                    )
                                 "
                             >
                                 DELETE
@@ -59,8 +59,12 @@ export default {
     },
 
     props: {
-        stores: {
+        locations: {
             type: Array,
+            required: true
+        },
+        store: {
+            type: Object,
             required: true
         }
     },
@@ -69,7 +73,7 @@ export default {
         return {
             headers: [
                 { text: "Name", value: "name" },
-                { text: "Email", value: "email" },
+                { text: "Address", value: "address" },
                 { text: "Actions", value: "actions" }
             ]
         };

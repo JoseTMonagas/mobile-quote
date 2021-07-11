@@ -18,13 +18,18 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->role == "ADMIN") {
-            $store = Auth::user()->stores->first();
-            $users = User::whereHas("stores", function ($query) use ($store) {
-                return $query->where("stores.id", $store->id);
-            })->get();
-        } else {
-            $users = User::all();
+        $users = [];
+        switch (Auth::user()->role) {
+            case "ADMIN":
+                $store = Auth::user()->store;
+                $users = $store->users;
+                break;
+            case "OWNER":
+                $users = User::all();
+                break;
+            default:
+                abort(403, 'Unauthorized.');
+                break;
         }
 
         return Inertia::render('Users/Index', [
@@ -58,8 +63,8 @@ class UserController extends Controller
         ]);
 
         if (Auth::user()->role == "ADMIN") {
-            $stores = Auth::user()->stores->pluck("id");
-            $user->stores()->attach($stores);
+            $user->store_id = Auth::user()->store->id;
+            $user->save();
         }
         return response()->json($user, 201);
     }
@@ -136,9 +141,5 @@ class UserController extends Controller
         $user->role = $newRole;
         $user->save();
         return response()->json("OK");
-    }
-
-    public function updateStore(Request $request, User $user)
-    {
     }
 }

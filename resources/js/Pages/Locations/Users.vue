@@ -2,7 +2,7 @@
     <app-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Stores: Update users
+                Locations: Update users
             </h2>
         </template>
 
@@ -11,12 +11,14 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <form-section @submitted="onFormSubmit">
                         <template #title>
-                            <strong class="p-3">Update store users</strong>
+                            <strong class="p-3">Update location users</strong>
                         </template>
                         <template #description>
                             <nav-link
                                 class="ml-2 mt-1"
-                                :href="$route('stores.index')"
+                                :href="
+                                    $route('stores.locations.index', store.id)
+                                "
                             >
                                 <span
                                     class="iconify"
@@ -28,14 +30,14 @@
 
                             <ul class="p-3">
                                 <li>
-                                    <b>Store name:</b>
-                                    {{ store.name }}
+                                    <b>Location name:</b>
+                                    {{ location.name }}
                                 </li>
                             </ul>
                         </template>
                         <template #form>
                             <label class="col-span-2" for="users"
-                                >Users for this store:</label
+                                >Users for this location:</label
                             >
                             <v-select
                                 multiple
@@ -88,13 +90,17 @@ export default {
             type: Array,
             required: true
         },
+        location: {
+            type: Object,
+            required: true
+        },
         store: {
             type: Object,
             required: true
         }
     },
 
-    created() {
+    mounted() {
         this.cleanForm();
     },
 
@@ -106,14 +112,14 @@ export default {
 
     methods: {
         cleanForm() {
-            this.users = this.userList.filter(user => {
-                return user.pivot;
-            });
+            this.users = this.userList.filter(
+                user => user.location_id == this.location.id
+            );
         },
         onFormSubmit() {
             const users = this.users;
             axios
-                .post(this.$route("stores.users", this.store.id), {
+                .post(this.$route("locations.users", this.location.id), {
                     users
                 })
                 .catch(error => {
@@ -146,7 +152,7 @@ export default {
                 .then(response => {
                     if (response.status >= 200 && response.status < 400) {
                         Swal.fire({
-                            title: "Store users saved succesfully!",
+                            title: "Location users saved succesfully!",
                             icon: "success"
                         });
                     }

@@ -82,6 +82,7 @@ export default {
             headers: [
                 { text: "Date", value: "date" },
                 { text: "Store", value: "store" },
+                { text: "Location", value: "location" },
                 { text: "User", value: "user" },
                 { text: "Device", value: "device" },
                 { text: "Base Price", value: "base_price" },
@@ -155,7 +156,6 @@ export default {
                             });
                         }
                         this.report = response.data;
-                        console.log(this.report);
                     }
                 });
         }

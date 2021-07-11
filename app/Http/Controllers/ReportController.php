@@ -27,15 +27,13 @@ class ReportController extends Controller
             ["created_at", "<=", $end],
         ]);
 
-        $store = Auth::user()->stores->first();
+        $store = Auth::user()->store;
         $ids = $store->users->pluck("id");
 
         if (Auth::user()->role != "OWNER") {
 
             switch (Auth::user()->role) {
                 case "ADMIN":
-                    $store = Auth::user()->stores->first();
-                    $ids = $store->users->pluck("id");
                     $quotes->whereIn("user_id", $ids->toArray());
                     break;
                 case "USER":
@@ -55,7 +53,8 @@ class ReportController extends Controller
         $response = $quotes->map(function ($quote) {
             return [
                 "date" => date('d-m-Y H:i', strtotime($quote->created_at)),
-                "store" => $quote->user->stores->first()->name ?? "No Store assigned",
+                "store" => $quote->user->store->name ?? "No Store assigned",
+                "location" => $quote->user->location->name ?? "No Location assigned",
                 "user" => $quote->user->name,
                 "base_price" => "{$quote->device->base_price}$",
                 "device" => $quote->device->model,

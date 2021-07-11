@@ -28,6 +28,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'store_id',
+        'location_id'
     ];
 
     /**
@@ -62,10 +64,18 @@ class User extends Authenticatable
 
 
     /**
-     * A User may belong to many Stores
+     * A User may belong to one Store.
      */
-    public function stores()
+    public function store()
     {
-        return $this->belongsToMany(Store::class)->withTimestamps();
+        return $this->belongsTo(Store::class);
+    }
+
+    /**
+     * A User may belong to one Location.
+     */
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
     }
 }

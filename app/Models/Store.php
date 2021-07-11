@@ -18,6 +18,14 @@ class Store extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->hasMany(User::class);
+    }
+
+    /**
+     * A Store can have many locations
+     */
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
     }
 }

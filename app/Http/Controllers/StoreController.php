@@ -21,12 +21,17 @@ class StoreController extends Controller
     public function index()
     {
         $stores = [];
-        if (Auth::user()->role == "OWNER") {
-            $stores = Store::all();
-        }
 
-        if (Auth::user()->role == "ADMIN") {
-            $stores = Auth::user()->stores;
+        switch (Auth::user()->role) {
+            case "ADMIN":
+                $stores = [Auth::user()->store];
+                break;
+            case "OWNER":
+                $stores = Store::all();
+                break;
+            default:
+                abort(403, 'Unauthorized.');
+                break;
         }
 
         return Inertia::render("Stores/Index", [
@@ -106,35 +111,6 @@ class StoreController extends Controller
         $store->delete();
 
         return response()->json("OK", 200);
-    }
-
-    /**
-     * Lists the Users in that Store
-     * @param \App\Models\Store $store
-     * @return \Illuminate\Http\Response
-     */
-    public function listUsers(Store $store)
-    {
-        $userList = User::all()->merge($store->users);
-        return Inertia::render("Stores/Users", [
-            "userList" => $userList,
-            "store" => $store,
-        ]);
-    }
-
-    /**
-     * Updates Store Users
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Store $store
-     * @return \Illuminate\Http\Response
-     */
-    public function users(Request $request, Store $store)
-    {
-        $users = collect($request->users)->pluck("id");
-
-        $store->users()->sync($users);
-
-        return response()->json("OK");
     }
 
     /**
