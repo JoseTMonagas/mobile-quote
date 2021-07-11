@@ -36,6 +36,7 @@ class StoreController extends Controller
 
         return Inertia::render("Stores/Index", [
             "stores" => $stores,
+            "userRole" => Auth::user()->role,
         ]);
     }
 
@@ -111,6 +112,45 @@ class StoreController extends Controller
         $store->delete();
 
         return response()->json("OK", 200);
+    }
+
+    /**
+     * Lists the Users in that Store
+     * @param \App\Models\Store $store
+     * @return \Illuminate\Http\Response
+     */
+    public function listUsers(Store $store)
+    {
+        $userList = User::all()->merge($store->users);
+        return Inertia::render("Stores/Users", [
+            "userList" => $userList,
+            "store" => $store,
+        ]);
+    }
+
+    /**
+     * Updates Store Users
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Store $store
+     * @return \Illuminate\Http\Response
+     */
+    public function users(Request $request, Store $store)
+    {
+        $users = collect($request->users);
+
+        foreach($store->users as $user) {
+            $user->store_id = null;
+            $user->save();
+        }
+
+        foreach($users as $user) {
+            $user = User::find($user["id"]);
+            $user->store_id = $store->id;
+            $user->save();
+        }
+
+
+        return response()->json("OK");
     }
 
     /**

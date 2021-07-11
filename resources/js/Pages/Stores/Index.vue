@@ -17,6 +17,12 @@
                     <x-table :headers="headers" :items="stores">
                         <template #actions="{ item }">
                             <nav-link
+                                v-if="userRole === 'OWNER'"
+                                class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                                :href="$route('stores.usersList', item.id)"
+                                >USERS</nav-link
+                            >
+                            <nav-link
                                 class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                                 :href="
                                     $route('stores.locations.index', item.id)
@@ -62,6 +68,11 @@ export default {
         stores: {
             type: Array,
             required: true
+        },
+        userRole: {
+            type: String,
+            required: false,
+            default: null
         }
     },
 

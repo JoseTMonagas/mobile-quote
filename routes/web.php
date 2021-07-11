@@ -61,6 +61,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::resource("stores", StoreController::class)->except(["show"]);
 
+    Route::get("stores/{store}/users", [StoreController::class, "listUsers"])->name("stores.usersList");
+    Route::post("stores/{store}/users", [StoreController::class, "users"])->name("stores.users");
     Route::put("stores/{store}/receipt", [StoreController::class, "storeReceiptSettings"])->name("stores.storeReceiptSettings");
 
     Route::resource("users", UserController::class)->except(["show"]);
@@ -86,7 +88,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         ->name('reports.generate');
 
     Route::resource("stores.locations", LocationController::class)->shallow();
-
     Route::get("locations/{location}/users", [LocationController::class, "listUsers"])->name("locations.usersList");
     Route::post("locations/{location}/users", [LocationController::class, "users"])->name("locations.users");
 });
