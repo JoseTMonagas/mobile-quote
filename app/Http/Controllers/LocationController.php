@@ -7,6 +7,7 @@ use App\Models\Location;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class LocationController extends Controller
@@ -138,6 +139,19 @@ class LocationController extends Controller
         }
 
         return response()->json("OK");
+    }
+
+    /**
+     * Redirect the user to the right index
+     * @return \Illuminate\Http\Response
+     */
+    public function userLocations()
+    {
+        if (Auth::user()->role == 'ADMIN') {
+            $store = Auth::user()->store;
+            return redirect()->route("stores.locations.index", $store);
+        }
+        abort(403, 'Unauthorized.');
     }
 
 }

@@ -87,6 +87,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('reports', [ReportController::class, 'generate'])
         ->name('reports.generate');
 
+    Route::get("user/locations", [LocationController::class, "userLocations"])->name("locations.list");
     Route::resource("stores.locations", LocationController::class)->shallow();
     Route::get("locations/{location}/users", [LocationController::class, "listUsers"])->name("locations.usersList");
     Route::post("locations/{location}/users", [LocationController::class, "users"])->name("locations.users");
