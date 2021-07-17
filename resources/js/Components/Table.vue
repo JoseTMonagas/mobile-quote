@@ -1,7 +1,11 @@
 <template>
-    <section>
-        <header>
+    <section class="p-2">
+        <header class="flex flex-row justify-between">
             <slot name="header"></slot>
+            <span class="m-2">
+                <label for="filter">Filter:</label>
+                <x-input v-model="filter"></x-input>
+            </span>
         </header>
         <table class="w-full">
             <thead class="w-full">
@@ -59,7 +63,11 @@
                 </tr>
             </thead>
             <tbody class="w-full">
-                <tr class="w-full border-b" v-if="getRows.length > 0" v-for="(row, index) in getRows">
+                <tr
+                    class="w-full border-b"
+                    v-if="getRows.length > 0"
+                    v-for="(row, index) in getRows"
+                >
                     <td
                         class="p-1 text-left"
                         v-for="(header, index) in headers"
@@ -69,12 +77,11 @@
                         </slot>
                     </td>
                 </tr>
-                <tr v-else>
-                </tr>
+                <tr v-else></tr>
             </tbody>
         </table>
-        <footer classs="grid grid-flow-col gap-1 auto-cols-max">
-            <span class="p-3">
+        <footer classs="flex flex-row justify-around">
+            <span class="mx-1">
                 <button
                     class="border px-2 py-1 mx-1"
                     v-if="currentPage > 1"
@@ -87,7 +94,8 @@
                     v-for="i in pageList"
                     @click="changePage(i)"
                 >
-                    {{ i }}
+                    <strong v-if="i == currentPage">{{ i }}</strong>
+                    <span v-else>{{ i }}</span>
                 </button>
                 <button
                     class="border px-2 py-1 mx-1"
@@ -97,9 +105,11 @@
                     >
                 </button>
             </span>
-            <span>
-                <label for="filter">Filter:</label>
-                <x-input v-model="filter"></x-input>
+            <span class="mx-1">
+                <small>
+                    You're in page {{ currentPage }} of {{ numPages }} for
+                    {{ items.length }} items
+                </small>
             </span>
             <slot name="footer"></slot>
         </footer>
@@ -173,7 +183,7 @@ export default {
     data: () => {
         return {
             currentPage: 1,
-            elementsPerPage: 5,
+            elementsPerPage: 10,
             filter: "",
             rows: [],
             sortDirection: false,
