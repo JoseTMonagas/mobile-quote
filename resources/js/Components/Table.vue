@@ -107,7 +107,7 @@
             </span>
             <span class="mx-1">
                 <small>
-                    You're in page {{ currentPage }} of {{ numPages }} for
+                    You're on page {{ currentPage }} of {{ numPages }} for
                     {{ items.length }} items
                 </small>
             </span>
