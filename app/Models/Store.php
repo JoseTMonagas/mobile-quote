@@ -11,7 +11,8 @@ class Store extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ["name", "address", "email", "header", "footer", "logo"];
+
+    protected $fillable = ["name", "address", "email", "header", "footer", "logo", "price_percent"];
 
     /**
      * A Store can have many Users
@@ -27,5 +28,14 @@ class Store extends Model
     public function locations()
     {
         return $this->hasMany(Location::class);
+    }
+
+    /**
+    * Many to Many relationship with DeviceStorePrice, used to store custom prices
+    * @return Illuminate\Support\Collection
+    */
+    public function customPrices()
+    {
+        return $this->hasMany(DeviceStorePrice::class);
     }
 }

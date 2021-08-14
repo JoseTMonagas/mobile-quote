@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DeviceForm;
 use App\Models\Device;
+use App\Models\DeviceStorePrice;
 use App\Models\Issue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DeviceController extends Controller
@@ -18,7 +20,7 @@ class DeviceController extends Controller
     public function index()
     {
         return Inertia::render('Devices/Index', [
-            'devices' => Device::all()
+            'devices' => Device::all()->append("custom_price", "store_price")->toArray()
         ]);
     }
 
@@ -29,7 +31,7 @@ class DeviceController extends Controller
      */
     public function list()
     {
-        return response()->json(Device::all()->load('issues'));
+        return response()->json(Device::all()->append("custom_price", "store_price")->load('issues'));
     }
 
     /**
@@ -172,6 +174,28 @@ class DeviceController extends Controller
         });
 
         $device->issues()->sync($issues);
+
+        return response()->json("OK", 200);
+    }
+
+    /** Updates custom price for a Device
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Device $device
+     *
+     * @return \Illuminate\Http\Response */
+    public function customPrice(Request $request, Device $device)
+    {
+        if (!Auth::user()->store_id > 0) {
+            abort(400);
+        }
+
+        $customPrice = $request->input("custom_price");
+        $deviceCustomPrice = DeviceStorePrice::updateOrCreate([
+            "store_id" => Auth::user()->store_id,
+            "device_id" => $device->id,
+        ], [
+            "custom_price" => $customPrice,
+        ]);
 
         return response()->json("OK", 200);
     }

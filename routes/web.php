@@ -53,6 +53,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [DeviceController::class, "issues"]
     )->name("device.issues");
 
+    Route::post(
+        "device/{device}/prices",
+        [DeviceController::class, "customPrice"]
+    )->name("device.custom_price");
+
 
     Route::resource("issues", IssueController::class)->except(["show"]);
 

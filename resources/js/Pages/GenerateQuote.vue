@@ -34,7 +34,7 @@
                                                 class="w-40"
                                             />
                                             <strong class="ml-3">{{
-                                                `${option.model} ${option.brand}`
+                                                `${option.brand} ${option.model}`
                                             }}</strong>
                                         </main>
                                     </template>
@@ -235,6 +235,13 @@ export default {
         calculateQuote() {
             const base = this.device.base_price;
             const storeCut = base * (this.storePercent / 100);
+
+            let storePrice = this.device.store_price;
+
+            if (this.device.custom_price > 0) {
+                storePrice = this.device.custom_price
+            }
+
             let factor = 0;
             let issues = 0;
             if (
@@ -255,8 +262,7 @@ export default {
                 }
             }
 
-            const preStore = base - factor;
-            return Math.round(preStore - storeCut - issues).toFixed(0);
+            return Math.round(storePrice - factor - issues).toFixed(0);
         },
         onDeviceInput() {
             this.issuesList = this.device.issues;

@@ -29,7 +29,7 @@
                                     Quote Generator
                                 </jet-nav-link>
                                 <jet-nav-link
-                                    v-if="userRole == 'OWNER'"
+                                    v-if="userRole == 'OWNER' || userRole == 'ADMIN'"
                                     :href="route('device.index')"
                                     :active="route().current('device.index')"
                                     id="device-link"
