@@ -80,14 +80,6 @@
 
                             <span class="col-span-3"></span>
 
-                            <label for="image">Image:</label>
-                            <input
-                                type="file"
-                                name="image"
-                                class="col-span-2"
-                                @change="image = $event.target.files[0]"
-                            />
-                            <img v-if="image" :src="image" alt="" />
                         </template>
                         <template #actions>
                             <section class="flex flex-row justify-around">
