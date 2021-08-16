@@ -19,9 +19,15 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Devices/Index', [
+        $context = [
             'devices' => Device::all()->append("custom_price", "store_price")->toArray()
-        ]);
+        ];
+
+        if (Auth::user()->role == "ADMIN" && Auth::user()->store) {
+            $context["store"] = Auth::user()->store;
+        }
+
+        return Inertia::render('Devices/Index', $context);
     }
 
     /**

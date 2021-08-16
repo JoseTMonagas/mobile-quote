@@ -138,12 +138,12 @@ class StoreController extends Controller
     {
         $users = collect($request->users);
 
-        foreach($store->users as $user) {
+        foreach ($store->users as $user) {
             $user->store_id = null;
             $user->save();
         }
 
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $user = User::find($user["id"]);
             $user->store_id = $store->id;
             $user->save();
@@ -182,6 +182,21 @@ class StoreController extends Controller
         if ($has_header || $has_footer || $has_logo) {
             $store->save();
         }
+
+        return response()->json("OK");
+    }
+
+    /**
+     * Saves Store Receipt settings
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Store $store
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStorePercent(Request $request, Store $store)
+    {
+        $storeCut = $request->input("store_percent");
+        $store->price_percent = $storeCut;
+        $store->save();
 
         return response()->json("OK");
     }

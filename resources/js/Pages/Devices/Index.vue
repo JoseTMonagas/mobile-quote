@@ -9,11 +9,28 @@
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <nav-link
-                        class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                        :href="$route('device.create')"
-                    >CREATE NEW</nav-link
-                               >
+                    <div class="flex flex-row justify-between my-3">
+                        <nav-link
+                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                            :href="$route('device.create')"
+                        >
+                            CREATE NEW
+                        </nav-link>
+                        <form method="POST" class="mr-2" @submit="onSubmitStorePercent">
+                            <input
+                                class="border-gray-300 bg-gray-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                type="number"
+                                min="0"
+                                max="100"
+                                v-model="customStorePercent"
+                            />
+                            <button
+                                class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
+                            >
+                                Update store cut percent
+                            </button>
+                        </form>
+                    </div>
                     <x-table :headers="headers" :items="devices">
                         <template #custom_price="{ item }">
                             <input
@@ -65,6 +82,11 @@
          devices: {
              type: Array,
              required: true
+         },
+         store: {
+             type: Object,
+             required: false,
+             default: null
          }
      },
 
@@ -87,18 +109,18 @@
              this.headers = [
                  { text: "Brand", value: "brand" },
                  { text: "Model", value: "model" },
+                 { text: "Base Price ($)", value: "base_price" },
                  { text: "Store Price ($)", value: "store_price" },
                  { text: "Custom Price ($)", value: "custom_price" },
-                 { text: "Actions", value: "actions" }
              ]
+             this.customStorePercent = this.store.price_percent;
          }
      },
 
      data: () => {
          return {
-             headers: [
-
-             ]
+             headers: [],
+             customStorePercent: null
          };
      },
 
@@ -159,46 +181,92 @@
              const value = parseFloat(event.target.value);
 
              if (!Number.isNaN(value)) {
-                     axios
-                         .post(this.$route('device.custom_price', device.id), { custom_price: value })
-                         .catch(error => {
-                             if (error.response) {
-                                 // The request was made and the server responded with a status code
-                                 // that falls out of the range of 2xx
-                                 Swal.fire({
-                                     title: "An Error has ocurred!",
-                                     text: error.response.data,
-                                     icon: "error"
-                                 });
-                             } else if (error.request) {
-                                 // The request was made but no response was received
-                                 // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                                 // http.ClientRequest in node.js
-                                 Swal.fire({
-                                     title: "An Error has ocurred!",
-                                     text: error.request,
-                                     icon: "error"
-                                 });
-                             } else {
-                                 // Something happened in setting up the request that triggered an Error
-                                 Swal.fire({
-                                     title: "An Error has ocurred!",
-                                     text: error.message,
-                                     icon: "error"
-                                 });
-                             }
-                         })
-                         .then(response => {
-                             if (response.status >= 200 && response.status < 400) {
-                                 Swal.fire({
-                                     title: "Saved a custom price!",
-                                     icon: "success",
-                                     text: `Device ${device.model} has a custom price ${value} $`
-                                 });
-                             }
-                         });
+                 axios
+                     .post(this.$route('device.custom_price', device.id), { custom_price: value })
+                     .catch(error => {
+                         if (error.response) {
+                             // The request was made and the server responded with a status code
+                             // that falls out of the range of 2xx
+                             Swal.fire({
+                                 title: "An Error has ocurred!",
+                                 text: error.response.data,
+                                 icon: "error"
+                             });
+                         } else if (error.request) {
+                             // The request was made but no response was received
+                             // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                             // http.ClientRequest in node.js
+                             Swal.fire({
+                                 title: "An Error has ocurred!",
+                                 text: error.request,
+                                 icon: "error"
+                             });
+                         } else {
+                             // Something happened in setting up the request that triggered an Error
+                             Swal.fire({
+                                 title: "An Error has ocurred!",
+                                 text: error.message,
+                                 icon: "error"
+                             });
+                         }
+                     })
+                     .then(response => {
+                         if (response.status >= 200 && response.status < 400) {
+                             Swal.fire({
+                                 title: "Saved a custom price!",
+                                 icon: "success",
+                                 text: `Device ${device.model} has a custom price ${value} $`
+                             });
+                         }
+                     });
 
              }
+         },
+
+         onSubmitStorePercent: function(event) {
+             event.preventDefault();
+             const storePercent = this.customStorePercent
+             if (this.store == null) return;
+             axios
+                .put(this.$route('stores.updateStorePercent', this.store.id), { store_percent: storePercent })
+                .catch(error => {
+                    if (error.response) {
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: error.response.data,
+                            icon: "error"
+                        });
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: error.request,
+                            icon: "error"
+                        });
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: error.message,
+                            icon: "error"
+                        });
+                    }
+                })
+                .then(response => {
+                    if (response.status >= 200 && response.status < 400) {
+                        Swal.fire({
+                            title: "Updated the store's cut!",
+                            icon: "success",
+                            text: `The store's cut is now ${storePercent}%`
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                });
          }
      }
  };
