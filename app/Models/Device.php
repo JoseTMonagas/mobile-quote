@@ -52,7 +52,7 @@ class Device extends Model
             $store = $user->store;
             $storePercent = $store->price_percent;
 
-            return $this->base_price * ($storePercent / 100);
+            return round($this->base_price * (1 - $storePercent / 100));
         }
         return $this->base_price;
     }
