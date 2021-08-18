@@ -49,7 +49,7 @@
                             ></x-input>
 
                             <label class="col-span-2" for="price_percent"
-                                >Price Decrease (%):</label
+                                >Store Margin (%):</label
                             >
                             <x-input
                                 class="col-span-1"

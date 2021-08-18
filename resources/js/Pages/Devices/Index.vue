@@ -27,7 +27,7 @@
                             <button
                                 class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
                             >
-                                Update store cut percent
+                                Update store margin
                             </button>
                         </form>
                     </div>
