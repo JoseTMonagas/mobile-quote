@@ -108,7 +108,7 @@ export default {
             };
 
             workbook.SheetNames.push("Report");
-
+            let worksheet = XLSX.utils.json_to_sheet(this.report);
             workbook.Sheets["Report"] = worksheet;
 
             XLSX.writeFile(workbook, "Report.xlsx");
