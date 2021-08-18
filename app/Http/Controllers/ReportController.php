@@ -20,11 +20,11 @@ class ReportController extends Controller
     public function generate(Request $request)
     {
         $start = $request->start;
-        $end = $request->end;
+        $end = strtotime("1 day", strtotime($request->end));
 
         $quotes = Quote::where([
             ["created_at", ">=", $start],
-            ["created_at", "<=", $end],
+            ["created_at", "<=", date("Y-m-d", $end)],
         ]);
 
         $store = Auth::user()->store;
