@@ -38,7 +38,6 @@
                                 </jet-nav-link>
                                 <jet-nav-link
                                     v-if="
-                                        userRole == 'ADMIN' ||
                                             userRole == 'OWNER'
                                     "
                                     :href="route('issues.index')"
@@ -54,6 +53,14 @@
                                     id="issue-link"
                                 >
                                     Stores
+                                </jet-nav-link>
+                                <jet-nav-link
+                                    v-if="$page.props.user.role == 'ADMIN' && $page.props.user.store_id > 0"
+                                    :href="$route('stores.edit', $page.props.user.store_id)"
+                                    :active="route().current('stores.edit', $page.props.user.store_id)"
+                                    id="issue-link"
+                                >
+                                    Store
                                 </jet-nav-link>
                                 <jet-nav-link
                                     v-if="userRole == 'ADMIN'"
@@ -75,6 +82,10 @@
                                     Users
                                 </jet-nav-link>
                                 <jet-nav-link
+                                    v-if="
+                                        userRole == 'ADMIN' ||
+                                            userRole == 'OWNER'
+                                    "
                                     :href="route('reports.show')"
                                     :active="route().current('reports.show')"
                                     id="report-link"
