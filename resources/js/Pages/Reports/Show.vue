@@ -52,7 +52,7 @@
                     >
                         Export to excel
                     </button>
-                    <x-table :headers="headers" :items="report"></x-table>
+                    <x-table :headers="headers" :items="report" :key="keyCount"></x-table>
                 </div>
             </div>
         </div>
@@ -91,7 +91,8 @@ export default {
                 { text: "Serial #", value: "serial_ref" },
                 { text: "Internal #", value: "internal_ref" }
             ],
-            report: []
+            report: [],
+            keyCount: 0
         };
     },
     methods: {
@@ -156,6 +157,7 @@ export default {
                             });
                         }
                         this.report = response.data;
+                        this.keyCount += 1;
                     }
                 });
         }
