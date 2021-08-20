@@ -24,9 +24,8 @@ class DeviceForm extends FormRequest
     public function rules()
     {
         return [
-            'model' => 'required',
-            'brand' => 'required',
-            'image' => 'sometimes|image',
+            "model" => "required",
+            "brand" => "required",
             "base_price" => "required",
             "excellent_factor" => "required",
             "good_factor" => "required",
