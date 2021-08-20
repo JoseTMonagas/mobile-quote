@@ -13,10 +13,11 @@
                         <nav-link
                             class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             :href="$route('device.create')"
+                            v-if="userRole == 'OWNER'"
                         >
                             CREATE NEW
                         </nav-link>
-                        <form method="POST" class="mr-2" @submit="onSubmitStorePercent">
+                        <form method="POST" class="mx-2" @submit="onSubmitStorePercent" v-if="userRole == 'ADMIN'">
                             <input
                                 class="border-gray-300 bg-gray-100 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 type="number"
