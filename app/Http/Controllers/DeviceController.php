@@ -60,9 +60,7 @@ class DeviceController extends Controller
      */
     public function store(DeviceForm $request)
     {
-        $image = $request->file('image')->store('devices', 'public');
         $formData = $request->validated();
-        $formData["image"] = $image;
         $device = Device::create($formData);
         return response()->json($device, 201);
     }

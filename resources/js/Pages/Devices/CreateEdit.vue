@@ -233,8 +233,6 @@ export default {
                         Swal.fire({
                             title: "Device saved successfully",
                             icon: "success",
-                            text: `Device Name: ${response.data.name}\n
-                                Device Company: ${response.data.company}`
                         });
                         this.onClickReset();
                     }
