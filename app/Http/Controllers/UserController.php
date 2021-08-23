@@ -119,7 +119,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->stores()->detach();
         if ($user->delete()) {
             return response()->json('OK', 200);
         } else {
