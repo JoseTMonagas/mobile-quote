@@ -100,12 +100,6 @@ class DeviceController extends Controller
     public function update(DeviceForm $request, Device $device)
     {
         $formData = $request->validated();
-        if ($request->has("image")) {
-            $image = $request->file('image')->store('devices', 'public');
-            $formData["image"] = $image;
-        } else {
-            unset($formData["image"]);
-        }
 
         if ($device->update($formData)) {
             return response()->json($device, 201);
