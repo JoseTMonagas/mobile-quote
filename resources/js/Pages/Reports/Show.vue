@@ -52,7 +52,11 @@
                     >
                         Export to excel
                     </button>
-                    <x-table :headers="headers" :items="report" :key="keyCount"></x-table>
+                    <x-table
+                        :headers="headers"
+                        :items="report"
+                        :key="keyCount"
+                    ></x-table>
                 </div>
             </div>
         </div>
@@ -84,12 +88,13 @@ export default {
                 { text: "Store", value: "store" },
                 { text: "Location", value: "location" },
                 { text: "User", value: "user" },
-                { text: "Device", value: "device" },
-                { text: "Base Price", value: "base_price" },
-                { text: "Issues", value: "issues" },
-                { text: "Value", value: "value" },
                 { text: "Serial #", value: "serial_ref" },
-                { text: "Internal #", value: "internal_ref" }
+                { text: "Internal #", value: "internal_ref" },
+                { text: "Device", value: "device" },
+                { text: "Issues", value: "issues" },
+                { text: "Base Price", value: "base_price" },
+                { text: "Deduction", value: "deduction" },
+                { text: "Value", value: "value" }
             ],
             report: [],
             keyCount: 0
