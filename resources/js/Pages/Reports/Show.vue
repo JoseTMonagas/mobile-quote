@@ -88,13 +88,12 @@ export default {
                 { text: "Store", value: "store" },
                 { text: "Location", value: "location" },
                 { text: "User", value: "user" },
-                { text: "Serial #", value: "serial_ref" },
-                { text: "Internal #", value: "internal_ref" },
                 { text: "Device", value: "device" },
                 { text: "Issues", value: "issues" },
                 { text: "Base Price", value: "base_price" },
-                { text: "Deduction", value: "deduction" },
-                { text: "Value", value: "value" }
+                { text: "Value", value: "value" },
+                { text: "Serial #", value: "serial_ref" },
+                { text: "Internal #", value: "internal_ref" }
             ],
             report: [],
             keyCount: 0

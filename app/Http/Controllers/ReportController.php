@@ -47,17 +47,19 @@ class ReportController extends Controller
         $quotes = $quotes->get();
 
         $response = $quotes->map(function ($quote) {
-            $deduction = $quote->device->base_price - $quote->value;
+            $deduction = $quote->issues->reduce(function ($carry, $issue) {
+                return $carry + $issue->pivot->deduction;
+            });
+            $basePrice = $quote->device->base_price - $deduction;
             return [
                 "date" => date("d-m-Y H:i", strtotime($quote->created_at)),
                 "store" => $quote->user->store->name ?? "No Store assigned",
                 "location" =>
-                    $quote->user->location->name ?? "No Location assigned",
+                $quote->user->location->name ?? "No Location assigned",
                 "user" => $quote->user->name,
-                "base_price" => "{$quote->device->base_price}$",
+                "base_price" => "{$basePrice}$",
                 "device" => $quote->device->model,
                 "issues" => $quote->issues->pluck("name")->join(", "),
-                "deduction" => "{$deduction}$",
                 "value" => "{$quote->value}$",
                 "serial_ref" => $quote->serial_ref,
                 "internal_ref" => $quote->internal_ref,
