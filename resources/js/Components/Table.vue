@@ -141,7 +141,8 @@ export default {
                 this.rows = this.items;
             } else {
                 this.rows = this.items.filter(item => {
-                    return JSON.stringify(item).includes(newFilter);
+                    const row = JSON.stringify(item).toUpperCase()
+                    return row.includes(newFilter.toUpperCase());
                 });
             }
         }
