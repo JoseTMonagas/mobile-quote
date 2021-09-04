@@ -56,10 +56,10 @@ class ReportController extends Controller
                 "store" => $quote->user->store->name ?? "No Store assigned",
                 "location" => $quote->user->location->name ?? "No Location assigned",
                 "user" => $quote->user->name,
-                "base_price" => "{$quote->device->base_price}$",
+                "base_price" => "$ {$quote->device->base_price}",
                 "device" => $quote->device->model,
                 "issues" => $quote->issues->pluck('name')->join(', '),
-                "value" => "{$quote->value}$",
+                "value" => "$ {$quote->value}",
                 "serial_ref" => $quote->serial_ref,
                 "internal_ref" => $quote->internal_ref,
             ];

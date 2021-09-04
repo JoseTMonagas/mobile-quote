@@ -134,7 +134,7 @@
         <dialog-modal :show="dlgConfirmation">
             <template #title>
                 You're generating a new quote for
-                {{ quote }}$
+                $ {{ quote }}
             </template>
             <template #content>
                 <div class="flex flex-col">
