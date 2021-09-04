@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-12">
             <b>Quote N: </b>
-            {{ str_pad($quote->id, 6, "0", STR_PAD_LEFT) }}
+            {{ $quote->internal_ref ?? str_pad($quote->internal_ref, 6, "0", STR_PAD_LEFT) }}
         </div>
     </div>
     @isset($header)
