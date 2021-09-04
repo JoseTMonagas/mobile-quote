@@ -260,9 +260,9 @@
                 .then(response => {
                     if (response.status >= 200 && response.status < 400) {
                         Swal.fire({
-                            title: "Updated the store's cut!",
+                            title: "Updated store's margin!",
                             icon: "success",
-                            text: `The store's cut is now ${storePercent}%`
+                            text: `The store's margin is now ${storePercent}%`
                         }).then(() => {
                             location.reload();
                         });
