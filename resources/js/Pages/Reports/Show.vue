@@ -74,27 +74,54 @@ export default {
         "x-table": Table,
         "x-button": Button
     },
+
     data: () => {
         return {
             start: "",
             end: "",
 
             headers: [
-                { text: "Date", value: "date" },
-                { text: "Store", value: "store" },
-                { text: "Location", value: "location" },
-                { text: "User", value: "user" },
-                { text: "Device", value: "device" },
-                { text: "Base Price", value: "base_price" },
-                { text: "Issues", value: "issues" },
-                { text: "Value", value: "value" },
-                { text: "Serial #", value: "serial_ref" },
-                { text: "Internal #", value: "internal_ref" }
+
             ],
             report: [],
             keyCount: 0
         };
     },
+
+     created() {
+         const role = this.$page.props.user.role;
+
+         if (role == "ADMIN") {
+             this.headers = [
+                { text: "Date", value: "date" },
+                { text: "Location", value: "location" },
+                { text: "User", value: "user" },
+                { text: "Device", value: "device" },
+                { text: "Issues", value: "issues" },
+                { text: "Base Price", value: "base_price" },
+                { text: "Value", value: "value" },
+                { text: "Serial #", value: "serial_ref" },
+                { text: "Internal #", value: "internal_ref" }
+             ]
+         }
+
+         if (role == "OWNER") {
+             this.headers = [
+                { text: "Date", value: "date" },
+                { text: "Store", value: "store" },
+                { text: "User", value: "user" },
+                { text: "Device", value: "device" },
+                { text: "Issues", value: "issues" },
+                { text: "Base Price", value: "base_price" },
+                { text: "Value", value: "value" },
+                { text: "Serial #", value: "serial_ref" },
+                { text: "Internal #", value: "internal_ref" }
+             ]
+         }
+
+     },
+
+
     methods: {
         onClickReset() {
             this.start = "";
