@@ -262,7 +262,13 @@ export default {
                 }
             }
 
-            return Math.round(storePrice - factor - issues).toFixed(0);
+            const quote = Math.round(storePrice - factor - issues).toFixed(0)
+
+            if (quote <= 0) {
+                return 0;
+            }
+
+            return quote;
         },
         onDeviceInput() {
             this.issuesList = this.device.issues;
