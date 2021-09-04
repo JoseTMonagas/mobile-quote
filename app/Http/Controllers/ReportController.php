@@ -14,7 +14,7 @@ class ReportController extends Controller
      */
     public function show()
     {
-        return Inertia::render('Reports/Show');
+        return Inertia::render("Reports/Show");
     }
 
     public function generate(Request $request)
@@ -27,8 +27,9 @@ class ReportController extends Controller
             ["created_at", "<=", date("Y-m-d", $end)],
         ]);
 
-
         if (Auth::user()->role != "OWNER") {
+            $store = Auth::user()->store;
+            $ids = $store->users->pluck("id");
 
             switch (Auth::user()->role) {
                 case "ADMIN":
@@ -39,24 +40,25 @@ class ReportController extends Controller
                 case "USER":
                     $quotes->whereIn("user_id", [Auth::id()]);
                     break;
-                case "OWNER":
-                    break;
                 default:
-                    abort(403, 'Unauthorized.');
+                    abort(403, "Unauthorized.");
                     break;
             }
         }
 
         $quotes = $quotes->get();
 
-
         $response = $quotes->map(function ($quote) {
+            $deduction = $quote->issues->reduce(function ($carry, $issue) {
+                return $carry + $issue->pivot->deduction;
+            });
+            $basePrice = $quote->device->base_price - $deduction;
             return [
                 "date" => date('d-m-Y', strtotime($quote->created_at)),
                 "store" => $quote->user->store->name ?? "No Store assigned",
                 "location" => $quote->user->location->name ?? "No Location assigned",
                 "user" => $quote->user->name,
-                "base_price" => "$ {$quote->device->base_price}",
+                "base_price" => "$ {$basePrice}",
                 "device" => $quote->device->model,
                 "issues" => $quote->issues->pluck('name')->join(', '),
                 "value" => "$ {$quote->value}",

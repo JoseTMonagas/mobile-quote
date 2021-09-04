@@ -52,7 +52,11 @@
                     >
                         Export to excel
                     </button>
-                    <x-table :headers="headers" :items="report" :key="keyCount"></x-table>
+                    <x-table
+                        :headers="headers"
+                        :items="report"
+                        :key="keyCount"
+                    ></x-table>
                 </div>
             </div>
         </div>
