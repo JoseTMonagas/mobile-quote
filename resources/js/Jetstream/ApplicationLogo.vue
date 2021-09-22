@@ -1,3 +1,3 @@
 <template>
-    <img src="/public/img/_REFRESHMOBILE.png" alt="" />
+    <img src="/img/_REFRESHMOBILE.png" alt="" />
 </template>
