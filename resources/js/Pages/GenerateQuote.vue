@@ -28,11 +28,6 @@
                                         <main
                                             class="flex flex-row align-center"
                                         >
-                                            <img
-                                                :src="option.image"
-                                                alt=""
-                                                class="w-40"
-                                            />
                                             <strong class="ml-3">{{
                                                 `${option.brand} ${option.model}`
                                             }}</strong>
@@ -133,8 +128,7 @@
         </div>
         <dialog-modal :show="dlgConfirmation">
             <template #title>
-                You're generating a new quote for
-                $ {{ quote }}
+                You're generating a new quote for $ {{ quote }}
             </template>
             <template #content>
                 <div class="flex flex-col">
@@ -234,12 +228,15 @@ export default {
         },
         calculateQuote() {
             const base = this.device.base_price;
-            const storeCut = base * (this.storePercent / 100);
 
             let storePrice = this.device.store_price;
 
             if (this.device.custom_price > 0) {
-                storePrice = this.device.custom_price
+                storePrice = this.device.custom_price;
+            }
+
+            if (storePrice <= 0) {
+                storePrice = base;
             }
 
             let factor = 0;
@@ -262,7 +259,16 @@ export default {
                 }
             }
 
-            const quote = Math.round(storePrice - factor - issues).toFixed(0)
+            let storeMargin = this.storePercent;
+
+            if (storeMargin <= 0) {
+                storeMargin = 100;
+            }
+
+            let preMargin = storePrice - factor - issues;
+            let withMargin = preMargin * (storeMargin / 100);
+
+            const quote = Math.round(withMargin).toFixed(0);
 
             if (quote <= 0) {
                 return 0;
