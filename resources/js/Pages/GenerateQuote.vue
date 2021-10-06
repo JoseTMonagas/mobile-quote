@@ -260,10 +260,6 @@ export default {
 
             let storeMargin = this.storePercent;
 
-            if (storeMargin <= 0) {
-                storeMargin = 100;
-            }
-
             let preMargin = storePrice - factor - issues;
             let withMargin = preMargin * (1 - storeMargin / 100);
 
