@@ -265,7 +265,7 @@ export default {
             }
 
             let preMargin = storePrice - factor - issues;
-            let withMargin = preMargin * (storeMargin / 100);
+            let withMargin = preMargin * (1 - storeMargin / 100);
 
             const quote = Math.round(withMargin).toFixed(0);
 
