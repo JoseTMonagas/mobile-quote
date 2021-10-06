@@ -228,8 +228,7 @@ export default {
         },
         calculateQuote() {
             const base = this.device.base_price;
-
-            let storePrice = this.device.store_price;
+            let storePrice = 0;
 
             if (this.device.custom_price > 0) {
                 storePrice = this.device.custom_price;
