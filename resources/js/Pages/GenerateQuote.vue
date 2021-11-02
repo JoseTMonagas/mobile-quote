@@ -4,6 +4,12 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Quote Generator
             </h2>
+            <inertia-link
+                :href="$route('bulkQuotes.create')"
+                class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            >
+                + Bulk Quote
+            </inertia-link>
         </template>
 
         <div class="py-12">
@@ -259,6 +265,9 @@ export default {
             }
 
             let storeMargin = this.storePercent;
+            if (this.device.custom_price > 0) {
+                storeMargin = 0;
+            }
 
             let preMargin = storePrice - factor - issues;
             let withMargin = preMargin * (1 - storeMargin / 100);

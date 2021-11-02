@@ -32,6 +32,26 @@ class QuoteController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkCreate()
+    {
+        $storePercent = 0;
+        if (Auth::user()->store) {
+            $storePercent = Auth::user()
+                ->store
+                ->price_percent;
+        }
+
+
+        return Inertia::render("GenerateBulkQuote", [
+            "storePercent" => $storePercent,
+        ]);
+    }
+
+    /**
      * Stores a new Quote.
      *
      * @param  QuoteForm  $request
@@ -55,6 +75,19 @@ class QuoteController extends Controller
         }
 
         return response()->json($quote, 201);
+    }
+
+    /**
+     * Stores a new Quote with multiple Device.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkStore($request)
+    {
+        dd($request);
+
+        return response()->json(201);
     }
 
     public function receipt(Quote $quote)
