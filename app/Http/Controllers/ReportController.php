@@ -48,24 +48,34 @@ class ReportController extends Controller
 
         $quotes = $quotes->get();
 
-        $response = $quotes->map(function ($quote) {
-            $deduction = $quote->issues->reduce(function ($carry, $issue) {
-                return $carry + $issue->pivot->deduction;
-            });
-            $basePrice = $quote->device->base_price - $deduction;
-            return [
-                "date" => date('d-m-Y', strtotime($quote->created_at)),
-                "store" => $quote->user->store->name ?? "No Store assigned",
-                "location" => $quote->user->location->name ?? "No Location assigned",
-                "user" => $quote->user->name,
-                "base_price" => "$ {$basePrice}",
-                "device" => $quote->device->model,
-                "issues" => $quote->issues->pluck('name')->join(', '),
-                "value" => "$ {$quote->value}",
-                "serial_ref" => $quote->serial_ref,
-                "internal_ref" => $quote->internal_ref,
-            ];
-        });
+        $response = [];
+
+        foreach ($quotes as $quote) {
+            foreach ($quote->items as $item) {
+                $deduction = 0;
+                $issues = collect([]);
+                foreach ($item["issues"] as $issue) {
+                    $deduction += $issue["pivot"]["deduction"];
+                    $issues->push($issue["name"]);
+                }
+                $basePrice = $item["device"]["base_price"] - $deduction;
+
+                $row = [
+                    "date" => date('d-m-Y', strtotime($quote->created_at)),
+                    "store" => $quote->user->store->name ?? "No Store assigned",
+                    "location" => $quote->user->location->name ?? "No Location assigned",
+                    "user" => $quote->user->name,
+                    "base_price" => "$ {$basePrice}",
+                    "device" => $item["device"]["model"],
+                    "issues" => $issues->join(', '),
+                    "value" => "$ {$item["value"]}",
+                    "serial_ref" => $item["serialNumber"],
+                    "internal_ref" => $quote->internal_number,
+                ];
+
+                $response[] = $row;
+            }
+        }
 
         return response()->json($response);
     }

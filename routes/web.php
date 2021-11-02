@@ -30,6 +30,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post("quote", [QuoteController::class, "store"])
         ->name('quotes.store');
 
+    Route::get("bulk", [QuoteController::class, "bulkCreate"])->name("bulkQuotes.create");
+
 
     Route::get("dashboard", function () {
         return redirect()->route("quotes.create");

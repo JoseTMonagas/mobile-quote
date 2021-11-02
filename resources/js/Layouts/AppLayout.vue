@@ -30,7 +30,10 @@
                                     Quote Generator
                                 </jet-nav-link>
                                 <jet-nav-link
-                                    v-if="userRole == 'OWNER' || userRole == 'ADMIN'"
+                                    v-if="
+                                        userRole == 'OWNER' ||
+                                            userRole == 'ADMIN'
+                                    "
                                     :href="route('device.index')"
                                     :active="route().current('device.index')"
                                     id="device-link"
@@ -38,9 +41,7 @@
                                     Devices
                                 </jet-nav-link>
                                 <jet-nav-link
-                                    v-if="
-                                            userRole == 'OWNER'
-                                    "
+                                    v-if="userRole == 'OWNER'"
                                     :href="route('issues.index')"
                                     :active="route().current('issues.index')"
                                     id="issue-link"
@@ -56,9 +57,22 @@
                                     Stores
                                 </jet-nav-link>
                                 <jet-nav-link
-                                    v-if="$page.props.user.role == 'ADMIN' && $page.props.user.store_id > 0"
-                                    :href="$route('stores.edit', $page.props.user.store_id)"
-                                    :active="route().current('stores.edit', $page.props.user.store_id)"
+                                    v-if="
+                                        $page.props.user.role == 'ADMIN' &&
+                                            $page.props.user.store_id > 0
+                                    "
+                                    :href="
+                                        $route(
+                                            'stores.edit',
+                                            $page.props.user.store_id
+                                        )
+                                    "
+                                    :active="
+                                        route().current(
+                                            'stores.edit',
+                                            $page.props.user.store_id
+                                        )
+                                    "
                                     id="issue-link"
                                 >
                                     Store
@@ -344,7 +358,6 @@
                                         d="M4 6h16M4 12h16M4 18h16"
                                     />
                                     <path
-
                                         :class="{
                                             hidden: !showingNavigationDropdown,
                                             'inline-flex': showingNavigationDropdown
@@ -375,77 +388,79 @@
                         >
                             Dashboard
                         </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    :href="route('quotes.create')"
-                                    :active="route().current('quotes.create')"
-                                    id="dashboard-link"
-                                >
-                                    Quote Generator
-                                </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    v-if="userRole == 'OWNER' || userRole == 'ADMIN'"
-                                    :href="route('device.index')"
-                                    :active="route().current('device.index')"
-                                    id="device-link"
-                                >
-                                    Devices
-                                </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    v-if="
-                                            userRole == 'OWNER'
-                                    "
-                                    :href="route('issues.index')"
-                                    :active="route().current('issues.index')"
-                                    id="issue-link"
-                                >
-                                    Issues
-                                </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    v-if="userRole == 'OWNER'"
-                                    :href="route('stores.index')"
-                                    :active="route().current('stores.index')"
-                                    id="issue-link"
-                                >
-                                    Stores
-                                </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    v-if="$page.props.user.role == 'ADMIN' && $page.props.user.store_id > 0"
-                                    :href="$route('stores.edit', $page.props.user.store_id)"
-                                    :active="route().current('stores.edit', $page.props.user.store_id)"
-                                    id="issue-link"
-                                >
-                                    Store
-                                </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    v-if="userRole == 'ADMIN'"
-                                    :href="route('locations.list')"
-                                    :active="route().current('locations.list')"
-                                    id="issue-link"
-                                >
-                                    Locations
-                                </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    v-if="
-                                        userRole == 'ADMIN' ||
-                                            userRole == 'OWNER'
-                                    "
-                                    :href="route('users.index')"
-                                    :active="route().current('users.index')"
-                                    id="issue-link"
-                                >
-                                    Users
-                                </jet-responsive-nav-link>
-                                <jet-responsive-nav-link
-                                    v-if="
-                                        userRole == 'ADMIN' ||
-                                            userRole == 'OWNER'
-                                    "
-                                    :href="route('reports.show')"
-                                    :active="route().current('reports.show')"
-                                    id="report-link"
-                                >
-                                    Reports
-                                </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            :href="route('quotes.create')"
+                            :active="route().current('quotes.create')"
+                            id="dashboard-link"
+                        >
+                            Quote Generator
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            v-if="userRole == 'OWNER' || userRole == 'ADMIN'"
+                            :href="route('device.index')"
+                            :active="route().current('device.index')"
+                            id="device-link"
+                        >
+                            Devices
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            v-if="userRole == 'OWNER'"
+                            :href="route('issues.index')"
+                            :active="route().current('issues.index')"
+                            id="issue-link"
+                        >
+                            Issues
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            v-if="userRole == 'OWNER'"
+                            :href="route('stores.index')"
+                            :active="route().current('stores.index')"
+                            id="issue-link"
+                        >
+                            Stores
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            v-if="
+                                $page.props.user.role == 'ADMIN' &&
+                                    $page.props.user.store_id > 0
+                            "
+                            :href="
+                                $route('stores.edit', $page.props.user.store_id)
+                            "
+                            :active="
+                                route().current(
+                                    'stores.edit',
+                                    $page.props.user.store_id
+                                )
+                            "
+                            id="issue-link"
+                        >
+                            Store
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            v-if="userRole == 'ADMIN'"
+                            :href="route('locations.list')"
+                            :active="route().current('locations.list')"
+                            id="issue-link"
+                        >
+                            Locations
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            v-if="userRole == 'ADMIN' || userRole == 'OWNER'"
+                            :href="route('users.index')"
+                            :active="route().current('users.index')"
+                            id="issue-link"
+                        >
+                            Users
+                        </jet-responsive-nav-link>
+                        <jet-responsive-nav-link
+                            v-if="userRole == 'ADMIN' || userRole == 'OWNER'"
+                            :href="route('reports.show')"
+                            :active="route().current('reports.show')"
+                            id="report-link"
+                        >
+                            Reports
+                        </jet-responsive-nav-link>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -580,7 +595,9 @@
 
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div
+                    class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex md:flex-row md:justify-between"
+                >
                     <slot name="header"></slot>
                 </div>
             </header>

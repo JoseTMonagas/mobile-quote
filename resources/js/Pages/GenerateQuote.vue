@@ -305,27 +305,28 @@ export default {
                 return;
             }
 
-            const device_id = this.device.id;
-            const condition = this.condition;
-            const issues = this.issues;
-            const value = this.quote;
-            const serial_ref = this.serialNumber;
-            const internal_ref = this.internalNumber;
+            const itemsPrototype = {
+                device: this.device,
+                quantity: 1,
+                condition: this.condition,
+                issues: this.issues,
+                value: this.quote,
+                serialNumber: this.serialNumber
+            };
+
+            const quotePrototype = {
+                name: this.quoteName,
+                internal_number: this.internalNumber,
+                store_margin: this.storePercent,
+                items: [itemsPrototype]
+            };
+
             axios
-                .post(this.$route("quotes.store"), {
-                    device_id,
-                    issues,
-                    value,
-                    serial_ref,
-                    internal_ref
-                })
+                .post(this.$route("quotes.store"), quotePrototype)
                 .then(resp => {
                     const quote_id = resp.data.id;
                     if (Number.isInteger(quote_id) && quote_id > 0) {
-                        window.open(
-                            this.$route("quotes.receipt", quote_id),
-                            "_blank"
-                        );
+                        window.open(this.$route("quotes.receipt", quote_id));
                     }
                 });
 

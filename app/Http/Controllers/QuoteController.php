@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BulkQuoteForm;
 use App\Models\Quote;
 use App\Http\Requests\QuoteForm;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -59,36 +60,17 @@ class QuoteController extends Controller
      */
     public function store(QuoteForm $request)
     {
-        $form = $request->validated();
-        $user = Auth::user();
-        $form["user_id"] = $user->id;
+        $attributes = $request->validated();
+        $attributes["user_id"] = Auth::user()->id;
+        $quote = new Quote($attributes);
 
-        $issues = collect($form["issues"])->mapWithKeys(function ($issue) {
-            return [$issue["id"] => [
-                "deduction" => $issue["pivot"]["deduction"] ?? 0,
-            ]];
-        });
-        $quote = Quote::create($form);
-
-        if ($issues->count() > 0) {
-            $quote->issues()->attach($issues->toArray());
+        if ($quote->save()) {
+            return response()->json($quote, 201);
         }
 
-        return response()->json($quote, 201);
+        return response()->json($quote, 500);
     }
 
-    /**
-     * Stores a new Quote with multiple Device.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function bulkStore($request)
-    {
-        dd($request);
-
-        return response()->json(201);
-    }
 
     public function receipt(Quote $quote)
     {

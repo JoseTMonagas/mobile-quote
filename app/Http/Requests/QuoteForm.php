@@ -24,11 +24,16 @@ class QuoteForm extends FormRequest
     public function rules()
     {
         return [
-            'device_id' => 'required|exists:devices,id',
-            'value' => 'required',
-            'serial_ref' => 'sometimes',
-            'internal_ref' => 'sometimes',
-            'issues' => 'sometimes',
+            "name" => "sometimes",
+            "internal_number" => "sometimes",
+            "store_margin" => "sometimes|numeric",
+            "items" => "required|array|min:1",
+            "items.*.device" => "required",
+            "items.*.quantity" => "required|numeric|gte:1",
+            "items.*.condition" => "required|alpha",
+            "items.*.issues" => "sometimes|array",
+            "items.*.value" => "required|numeric",
+            "items.*.serialNumber" => "sometimes"
         ];
     }
 }

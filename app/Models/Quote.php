@@ -12,26 +12,11 @@ class Quote extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ["user_id", "device_id", "value", "serial_ref", "internal_ref"];
+    protected $fillable = ["user_id", "name", "internal_number", "store_margin", "items"];
 
-    /**
-     * Many to Many relationship with issues
-     * @return Collection
-     */
-    public function issues()
-    {
-        return $this->belongsToMany(Issue::class)->withPivot("deduction");
-    }
-
-    /**
-      A Device may have many quotes
-      @return Collection
-     */
-    public function device()
-    {
-        return $this->belongsTo(Device::class);
-    }
-
+    protected $casts = [
+        "items" => "array",
+    ];
 
     /**
      * An User may have many quotes
@@ -40,5 +25,20 @@ class Quote extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get total amount of a Quote
+     * @return number
+     */
+    public function getTotalAttribute()
+    {
+        $total = 0;
+
+        foreach ($this->items as $item) {
+            $total += $item["value"];
+        }
+
+        return $total;
     }
 }

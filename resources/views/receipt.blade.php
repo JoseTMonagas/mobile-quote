@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-12">
             <b>Quote N: </b>
-            {{ $quote->internal_ref ?? str_pad($quote->internal_ref, 6, "0", STR_PAD_LEFT) }}
+            {{ $quote->internal_ref ?? str_pad($quote->id, 6, "0", STR_PAD_LEFT) }}
         </div>
     </div>
     @isset($header)
@@ -49,50 +49,48 @@
         <thead>
             <tr>
                 <th class="text-right" scope="col">DEVICE</th>
+                <th class="text-right" scope="col">QUANTITY</th>
+                <th class="text-right" scope="col">CONDITION</th>
+                <th class="text-right" scope="col">ISSUES</th>
+                <th class="text-right" scope="col">SUBTOTAL</th>
             </tr>
         </thead>
         <tbody>
+            @foreach($quote->items as $item)
             <tr>
                 <td class="text-right">
-                    {{ $quote->device->model  }}
+                    {{ $item["device"]["model"]  }}
+                </td>
+                <td class="text-right">
+                    {{ $item["quantity"]  }}
+                </td>
+                <td class="text-right">
+                    {{ $item["condition"] }}
+                </td>
+                <td class="text-right">
+                    @if(count($item["issues"]) > 0)
+                    YES
+                    @else
+                    NO
+                    @endif
+                </td>
+                <td class="text-right">
+                    $ {{ number_format($item["value"], 0)  }}
                 </td>
             </tr>
+            @endforeach
         </tbody>
     </table>
-    @if($quote->issues->count() > 0)
-    <div class="row">
-        <div class="col-span-6 offset-md-6">
-            <table class="table table-striped pb-4">
-                <thead>
-                    <tr>
-                        <th scope="col" class="text-right">ISSUES</th>
-                        <th scope="col" class="text-right">DEDUCTION</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($quote->issues as $issue)
-                    <tr>
-                        <td class="text-right">
-                            {{ $issue->name  }}
-                        </td>
-                        <td class="text-right">
-                            $ {{ number_format($issue->pivot->deduction, 0)  }}
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-    @endif
     <div class="row">
         <div class="col-span-4 offset-md-8">
             <table class="table table-striped pb-4">
                 <tr>
                     <td class="text-right">
-                        <b>Total:</b>
-                        $ {{ number_format($quote->value, 0)  }}
+                        <b>TOTAL:</b>
+                        $ {{ number_format($quote->total, 0)  }}
                     </td>
+                </tr>
+                <tr>
                 </tr>
             </table>
         </div>
