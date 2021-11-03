@@ -72,13 +72,13 @@
                         </button>
                         <button
                             class="inline-flex items-center px-4 py-2 bg-red-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
-                            @click="onClickReset()"
+                            @click="onClickReset"
                         >
                             Reset
                         </button>
                         <button
                             class="inline-flex items-center px-4 py-2 bg-green-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
-                            @click="dlgConfirmation = true"
+                            @click="onConfirmDialogClick"
                         >
                             Confirm
                         </button>
@@ -116,9 +116,9 @@
                         </tr>
                     </thead>
                     <tbody class="min-w-full">
-                        <template v-if="quoteStack.length > 0">
+                        <template v-if="quotes.length > 0">
                             <tr
-                                v-for="quote in quoteStack"
+                                v-for="quote in quotes"
                                 class="min-w-full border-b"
                             >
                                 <td class="p-1 text-left">
@@ -196,14 +196,8 @@ export default {
         return {
             devices: [],
             quoteStack: [],
-            device: "",
-            condition: "",
-            issues: [],
-            quote: 0,
-            serialNumber: "",
+            quotes: [],
             internalNumber: "",
-            accountRemoved: false,
-            factoryReset: false,
             dlgConfirmation: false,
             quoteName: ""
         };
@@ -212,7 +206,7 @@ export default {
     computed: {
         quoteTotal() {
             let total = 0;
-            for (const quote of this.quoteStack) {
+            for (const quote of this.quotes) {
                 total += parseFloat(quote.value);
             }
             return total;
@@ -256,7 +250,7 @@ export default {
                 }
             }
 
-            if (this.issues.length > 0) {
+            if (rowQuote.issues.length > 0) {
                 for (const issue in this.issues) {
                     issues += this.issues[issue].pivot.deduction;
                 }
@@ -270,7 +264,7 @@ export default {
             let preMargin = storePrice - factor - issues;
             let withMargin = preMargin * (1 - storeMargin / 100);
 
-            let quote = Math.round(withMargin).toFixed(0) * rowQuote.quantity;
+            let quote = Math.round(withMargin).toFixed(0);
 
             if (quote <= 0) {
                 quote = 0;
@@ -297,12 +291,22 @@ export default {
 
             this.quoteStack.push(quotePrototype);
         },
+        onConfirmDialogClick() {
+            for (const quote of this.quoteStack) {
+                for (let i = 0; i < quote.quantity; i++) {
+                    this.quotes.push({
+                        ...quote
+                    });
+                }
+            }
+            this.dlgConfirmation = true;
+        },
         onConfirmClick() {
             const bulkQuote = {
                 name: this.quoteName,
                 internal_number: this.internalNumber,
                 store_margin: this.storePercent,
-                items: this.quoteStack
+                items: this.quotes
             };
 
             axios.post(this.$route("quotes.store"), bulkQuote).then(resp => {

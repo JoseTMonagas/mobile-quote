@@ -49,9 +49,9 @@
         <thead>
             <tr>
                 <th class="text-right" scope="col">DEVICE</th>
-                <th class="text-right" scope="col">QUANTITY</th>
                 <th class="text-right" scope="col">CONDITION</th>
                 <th class="text-right" scope="col">ISSUES</th>
+                <th class="text-right" scope="col">SERIAL #</th>
                 <th class="text-right" scope="col">SUBTOTAL</th>
             </tr>
         </thead>
@@ -62,9 +62,6 @@
                     {{ $item["device"]["model"]  }}
                 </td>
                 <td class="text-right">
-                    {{ $item["quantity"]  }}
-                </td>
-                <td class="text-right">
                     {{ $item["condition"] }}
                 </td>
                 <td class="text-right">
@@ -73,6 +70,9 @@
                     @else
                     NO
                     @endif
+                </td>
+                <td class="text-right">
+                    {{ $item["serialNumber"]  }}
                 </td>
                 <td class="text-right">
                     $ {{ number_format($item["value"], 0)  }}
