@@ -23,14 +23,17 @@ use App\Http\Controllers\UserController;
 
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
     Route::get("/", [QuoteController::class, "create"])
         ->name("quotes.create");
+    Route::get("bulk", [QuoteController::class, "bulkCreate"])->name("bulkQuotes.create");
     Route::get("quote/{quote}/receipt", [QuoteController::class, "receipt"])
         ->name("quotes.receipt");
+
     Route::post("quote", [QuoteController::class, "store"])
         ->name('quotes.store');
 
-    Route::get("bulk", [QuoteController::class, "bulkCreate"])->name("bulkQuotes.create");
+    Route::delete("quotes/{quote}", [QuoteController::class, "destroy"])->name("quotes.destroy");
 
 
     Route::get("dashboard", function () {

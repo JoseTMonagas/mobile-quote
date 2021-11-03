@@ -61,6 +61,7 @@ class ReportController extends Controller
                 $basePrice = $item["device"]["base_price"] - $deduction;
 
                 $row = [
+                    "id" => $quote->id,
                     "date" => date('d-m-Y', strtotime($quote->created_at)),
                     "store" => $quote->user->store->name ?? "No Store assigned",
                     "location" => $quote->user->location->name ?? "No Location assigned",
@@ -71,6 +72,7 @@ class ReportController extends Controller
                     "value" => "$ {$item["value"]}",
                     "serial_ref" => $item["serialNumber"],
                     "internal_ref" => $quote->internal_number,
+                    "item" => $item,
                 ];
 
                 $response[] = $row;

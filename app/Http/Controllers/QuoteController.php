@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BulkQuoteForm;
 use App\Models\Quote;
 use App\Http\Requests\QuoteForm;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -72,6 +73,11 @@ class QuoteController extends Controller
     }
 
 
+    /**
+     * Generates a pdf detailing the items of a Quote.
+     * @param Quote $quote
+     * @return PDF
+     */
     public function receipt(Quote $quote)
     {
         $store = $quote->user->store;
@@ -93,5 +99,35 @@ class QuoteController extends Controller
                 'isRemoteEnabled' => 'true',
             ]);
         return $pdf->download("receipt.pdf");
+    }
+
+    /**
+     * Deletes a Device from a Quote, if the Quote has no
+     * devices left then the Quote itself is deleted.
+     * @param Quote $quote
+     * @return Response
+     */
+    public function destroy(Request $request, Quote $quote)
+    {
+        $haystack = collect($quote->items);
+        $needle = $request->all();
+
+        $items = $haystack->filter(function ($value) use ($needle) {
+            return $value != $needle;
+        });
+
+        $success = false;
+        if ($items->count() <= 0) {
+            $success = $quote->delete();
+        } else {
+            $quote->items = $items->toArray();
+            $success = $quote->save();
+        }
+
+        if ($success) {
+            return response()->json(200);
+        }
+
+        return response()->json(500);
     }
 }

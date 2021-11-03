@@ -52,11 +52,16 @@
                     >
                         Export to excel
                     </button>
-                    <x-table
-                        :headers="headers"
-                        :items="report"
-                        :key="keyCount"
-                    ></x-table>
+                    <x-table :headers="headers" :items="report" :key="keyCount">
+                        <template #actions="{ item }">
+                            <button
+                                class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
+                                @click="onDelete(item)"
+                            >
+                                DELETE
+                            </button>
+                        </template>
+                    </x-table>
                 </div>
             </div>
         </div>
@@ -84,19 +89,17 @@ export default {
             start: "",
             end: "",
 
-            headers: [
-
-            ],
+            headers: [],
             report: [],
             keyCount: 0
         };
     },
 
-     created() {
-         const role = this.$page.props.user.role;
+    created() {
+        const role = this.$page.props.user.role;
 
-         if (role == "ADMIN") {
-             this.headers = [
+        if (role == "ADMIN") {
+            this.headers = [
                 { text: "Date", value: "date" },
                 { text: "Location", value: "location" },
                 { text: "User", value: "user" },
@@ -105,12 +108,13 @@ export default {
                 { text: "Base Price", value: "base_price" },
                 { text: "Value", value: "value" },
                 { text: "Serial #", value: "serial_ref" },
-                { text: "Internal #", value: "internal_ref" }
-             ]
-         }
+                { text: "Internal #", value: "internal_ref" },
+                { text: "Delete", value: "actions" }
+            ];
+        }
 
-         if (role == "OWNER") {
-             this.headers = [
+        if (role == "OWNER") {
+            this.headers = [
                 { text: "Date", value: "date" },
                 { text: "Store", value: "store" },
                 { text: "User", value: "user" },
@@ -119,12 +123,11 @@ export default {
                 { text: "Base Price", value: "base_price" },
                 { text: "Value", value: "value" },
                 { text: "Serial #", value: "serial_ref" },
-                { text: "Internal #", value: "internal_ref" }
-             ]
-         }
-
-     },
-
+                { text: "Internal #", value: "internal_ref" },
+                { text: "Delete", value: "actions" }
+            ];
+        }
+    },
 
     methods: {
         onClickReset() {
@@ -144,6 +147,64 @@ export default {
             workbook.Sheets["Report"] = worksheet;
 
             XLSX.writeFile(workbook, "Report.xlsx");
+        },
+        onDelete(quote) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    axios
+                        .delete(this.$route("quotes.destroy", quote.id), {
+                            data: quote.item
+                        })
+                        .catch(error => {
+                            if (error.response) {
+                                // The request was made and the server responded with a status code
+                                // that falls out of the range of 2xx
+                                Swal.fire({
+                                    title: "An Error has ocurred!",
+                                    text: error.response.data,
+                                    icon: "error"
+                                });
+                            } else if (error.request) {
+                                // The request was made but no response was received
+                                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                                // http.ClientRequest in node.js
+                                Swal.fire({
+                                    title: "An Error has ocurred!",
+                                    text: error.request,
+                                    icon: "error"
+                                });
+                            } else {
+                                // Something happened in setting up the request that triggered an Error
+                                Swal.fire({
+                                    title: "An Error has ocurred!",
+                                    text: error.message,
+                                    icon: "error"
+                                });
+                            }
+                        })
+                        .then(response => {
+                            if (
+                                response.status >= 200 &&
+                                response.status < 400
+                            ) {
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    icon: "success"
+                                }).then(() => {
+                                    this.onFormSubmit();
+                                });
+                            }
+                        });
+                }
+            });
         },
         onFormSubmit() {
             const start = this.start;
