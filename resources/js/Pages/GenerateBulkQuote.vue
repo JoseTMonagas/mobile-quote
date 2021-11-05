@@ -38,7 +38,11 @@
                         </div>
                         <div class="col-span-2">
                             <label for="quantity">Quantity:</label>
-                            <x-input v-model="quote.quantity"></x-input>
+                            <input
+                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                type="number"
+                                v-model="quote.quantity"
+                            />
                         </div>
                         <div class="col-span-2">
                             <label for="condition">Avg condition:</label>
@@ -195,7 +199,16 @@ export default {
     data: () => {
         return {
             devices: [],
-            quoteStack: [],
+            quoteStack: [
+                {
+                    device: undefined,
+                    quantity: 1,
+                    condition: undefined,
+                    issues: [],
+                    value: 0,
+                    serialNumber: ""
+                }
+            ],
             quotes: [],
             internalNumber: "",
             dlgConfirmation: false,
