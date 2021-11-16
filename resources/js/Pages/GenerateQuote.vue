@@ -6,7 +6,27 @@
             </h2>
             <inertia-link
                 :href="$route('bulkQuotes.create')"
-                class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+                class="
+                    inline-flex
+                    items-center
+                    px-4
+                    py-2
+                    bg-blue-800
+                    border border-transparent
+                    rounded-md
+                    font-semibold
+                    text-xs text-white
+                    uppercase
+                    tracking-widest
+                    hover:bg-blue-700
+                    active:bg-gray-900
+                    focus:outline-none
+                    focus:border-gray-900
+                    focus:shadow-outline-gray
+                    transition
+                    ease-in-out
+                    duration-150
+                "
             >
                 + Bulk Quote
             </inertia-link>
@@ -106,21 +126,47 @@
                                 </span>
                                 <span class="flex justify-center mt-4">
                                     <button
-                                        class="bg-gray-800 text-white rounded-r-none rounded px-3 py-2 hover:bg-gray-300 hover:text-gray-800"
+                                        class="
+                                            bg-gray-800
+                                            text-white
+                                            rounded-r-none rounded
+                                            px-3
+                                            py-2
+                                            hover:bg-gray-300
+                                            hover:text-gray-800
+                                        "
                                         @click="onClickReset"
                                     >
                                         Reset
                                     </button>
 
                                     <button
-                                        class="bg-green-800 text-white rounded-r-none rounded-l-none rounded px-3 py-2 hover:bg-green-300 hover:text-gray-800"
+                                        class="
+                                            bg-green-800
+                                            text-white
+                                            rounded-r-none
+                                            rounded-l-none
+                                            rounded
+                                            px-3
+                                            py-2
+                                            hover:bg-green-300
+                                            hover:text-gray-800
+                                        "
                                         @click="onClickGenerate"
                                     >
                                         Generate
                                     </button>
 
                                     <button
-                                        class="bg-blue-800 text-white rounded-l-none rounded px-3 py-2 hover:bg-blue-300 hover:text-gray-800"
+                                        class="
+                                            bg-blue-800
+                                            text-white
+                                            rounded-l-none rounded
+                                            px-3
+                                            py-2
+                                            hover:bg-blue-300
+                                            hover:text-gray-800
+                                        "
                                         @click="onClickConfirm"
                                     >
                                         Confirm
@@ -147,7 +193,7 @@
                         >
                         <x-input v-model="internalNumber"></x-input>
                     </div>
-                    <div class="inline-flex flex-row  items-center my-3">
+                    <div class="inline-flex flex-row items-center my-3">
                         <x-checkbox v-model="accountRemoved"></x-checkbox>
                         <label for="accountRemoved"
                             >iCloud/Android account removed *</label
@@ -168,7 +214,14 @@
             <template #footer>
                 <div class="flex flex-col justify-center">
                     <button
-                        class="bg-blue-800 text-white rounded px-3 py-2 hover:bg-blue-300 hover:text-gray-800"
+                        class="
+                            bg-blue-800
+                            text-white
+                            rounded
+                            px-3
+                            py-2
+                            hover:bg-blue-300 hover:text-gray-800
+                        "
                         @click="onClickFinish"
                     >
                         Confirm
@@ -195,7 +248,7 @@ export default {
         "x-input": Input,
         "x-checkbox": Checkbox,
         "v-select": vSelect,
-        "v-radio": Radio
+        "v-radio": Radio,
     },
 
     created() {
@@ -206,8 +259,8 @@ export default {
         storePercent: {
             type: Number,
             default: 0,
-            required: true
-        }
+            required: true,
+        },
     },
 
     data: () => {
@@ -222,13 +275,13 @@ export default {
             internalNumber: "",
             accountRemoved: false,
             factoryReset: false,
-            dlgConfirmation: false
+            dlgConfirmation: false,
         };
     },
 
     methods: {
         getDevices() {
-            axios.get(this.$route("devices.list")).then(resp => {
+            axios.get(this.$route("devices.list")).then((resp) => {
                 this.devices = resp.data;
             });
         },
@@ -311,19 +364,20 @@ export default {
                 condition: this.condition,
                 issues: this.issues,
                 value: this.quote,
-                serialNumber: this.serialNumber
+                serialNumber: this.serialNumber,
             };
 
             const quotePrototype = {
                 name: this.quoteName,
                 internal_number: this.internalNumber,
                 store_margin: this.storePercent,
-                items: [itemsPrototype]
+                items: [itemsPrototype],
             };
 
+            debugger;
             axios
                 .post(this.$route("quotes.store"), quotePrototype)
-                .then(resp => {
+                .then((resp) => {
                     const quote_id = resp.data.id;
                     if (Number.isInteger(quote_id) && quote_id > 0) {
                         window.open(this.$route("quotes.receipt", quote_id));
@@ -332,7 +386,7 @@ export default {
 
             this.onClickReset();
             this.dlgConfirmation = false;
-        }
-    }
+        },
+    },
 };
 </script>
