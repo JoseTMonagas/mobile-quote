@@ -13,7 +13,7 @@
                                 <inertia-link :href="route('dashboard')">
                                     <jet-application-mark
                                         class="block h-9"
-                                        style="max-width: 16rem;"
+                                        style="max-width: 12rem;"
                                     />
                                 </inertia-link>
                             </div>
