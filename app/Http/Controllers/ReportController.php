@@ -53,12 +53,14 @@ class ReportController extends Controller
         foreach ($quotes as $quote) {
             foreach ($quote->items as $item) {
                 $deduction = 0;
+                $condition = strtolower($item["condition"]);
+                $basePrice = $item["device"]["base_price"] - ($item["device"]["{$condition}_factor"] ?? 0);
                 $issues = collect([]);
                 foreach ($item["issues"] as $issue) {
                     $deduction += $issue["pivot"]["deduction"];
                     $issues->push($issue["name"]);
                 }
-                $basePrice = $item["device"]["base_price"] - $deduction;
+                $basePrice -= $deduction;
 
                 $row = [
                     "id" => $quote->id,
