@@ -253,19 +253,19 @@ export default {
             let issues = 0;
             if (
                 ["EXCELLENT", "GOOD", "ACCEPTABLE", "BROKEN"].includes(
-                    this.condition
+                    rowQuote.condition.toUpperCase()
                 )
             ) {
-                const condition = this.condition.toLowerCase();
+                const condition = rowQuote.condition.toLowerCase();
                 const index = `${condition}_factor`;
-                if (Number.isFinite(this.device[index])) {
-                    factor = this.device[index];
+                if (Number.isFinite(rowQuote.device[index])) {
+                    factor = rowQuote.device[index];
                 }
             }
 
             if (rowQuote.issues.length > 0) {
-                for (const issue in this.issues) {
-                    issues += this.issues[issue].pivot.deduction;
+                for (const issue of rowQuote.issues) {
+                    issues += issue.pivot.deduction;
                 }
             }
 
