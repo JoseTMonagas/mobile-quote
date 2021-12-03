@@ -9,6 +9,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,4 +103,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::resource("stores.locations", LocationController::class)->shallow();
     Route::get("locations/{location}/users", [LocationController::class, "listUsers"])->name("locations.usersList");
     Route::post("locations/{location}/users", [LocationController::class, "users"])->name("locations.users");
+});
+
+Route::group(["prefix" => "ims", "name" => "inventory."], function () {
+    Route::resource("items", ItemController::class)
+        ->except(["show"]);
 });
