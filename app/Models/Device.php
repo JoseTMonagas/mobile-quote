@@ -15,6 +15,7 @@ class Device extends Model
     protected $fillable = [
         "model", "brand", "image", "base_price", "excellent_factor",
         "good_factor", "acceptable_factor", "broken_factor",
+        "supplier", "manufacturer"
     ];
 
     /**
@@ -26,9 +27,9 @@ class Device extends Model
 
 
     /**
-    * Get the Auth user's store's custom price.
-    * @return float
-    */
+     * Get the Auth user's store's custom price.
+     * @return float
+     */
     public function getCustomPriceAttribute()
     {
         $user = Auth::user();
@@ -42,9 +43,9 @@ class Device extends Model
     }
 
     /**
-    * Get the Auth user's store's percent price.
-    * @return float
-    */
+     * Get the Auth user's store's percent price.
+     * @return float
+     */
     public function getStorePriceAttribute()
     {
         $user = Auth::user();
@@ -59,19 +60,19 @@ class Device extends Model
 
 
     /**
-    * Many to Many relationship with Issues
-    * @return Illuminate\Support\Collection
-    */
+     * Many to Many relationship with Issues
+     * @return Illuminate\Support\Collection
+     */
     public function issues()
     {
         return $this->belongsToMany(Issue::class)
-                    ->withPivot("deduction");
+            ->withPivot("deduction");
     }
 
     /**
-    * Many to Many relationship with DeviceStorePrice, used to save custom prices
-    * @return Illuminate\Support\Collection
-    */
+     * Many to Many relationship with DeviceStorePrice, used to save custom prices
+     * @return Illuminate\Support\Collection
+     */
     public function customPrices()
     {
         return $this->hasMany(DeviceStorePrice::class);

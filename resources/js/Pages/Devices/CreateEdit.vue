@@ -38,6 +38,18 @@
                                 v-model="company"
                             ></x-input>
 
+                            <label for="supplier">Supplier:</label>
+                            <x-input
+                                class="col-span-2"
+                                v-model="supplier"
+                            ></x-input>
+
+                            <label for="manufacturer">Manufacturer:</label>
+                            <x-input
+                                class="col-span-2"
+                                v-model="manufacturer"
+                            ></x-input>
+
                             <label class="col-span-2" for="base_price"
                                 >Base Price:</label
                             >
@@ -79,7 +91,6 @@
                             ></x-input>
 
                             <span class="col-span-3"></span>
-
                         </template>
                         <template #actions>
                             <section class="flex flex-row justify-around">
@@ -146,6 +157,8 @@ export default {
         return {
             name: "",
             company: "",
+            supplier: "",
+            manufacturer: "",
             image: "",
             basePrice: "",
             excellent: "",
@@ -159,6 +172,8 @@ export default {
             if (this.device !== null) {
                 this.name = this.device.model;
                 this.company = this.device.brand;
+                this.supplier = this.device.supplier;
+                this.manufacturer = this.device.manufacturer;
                 this.basePrice = this.device.base_price;
                 this.excellent = this.device.excellent_factor;
                 this.good = this.device.good_factor;
@@ -168,6 +183,8 @@ export default {
             } else {
                 this.name = "";
                 this.company = "";
+                this.supplier = "";
+                this.manufacturer = "";
                 this.basePrice = "";
                 this.excellent = "";
                 this.good = "";
@@ -179,6 +196,8 @@ export default {
             let formData = new FormData();
             formData.append("model", this.name);
             formData.append("brand", this.company);
+            formData.append("supplier", this.supplier);
+            formData.append("manufacturer", this.manufacturer);
             formData.append("base_price", this.basePrice);
             formData.append("excellent_factor", this.excellent);
             formData.append("good_factor", this.good);
@@ -232,7 +251,7 @@ export default {
                     if (response.status >= 200 && response.status < 400) {
                         Swal.fire({
                             title: "Device saved successfully",
-                            icon: "success",
+                            icon: "success"
                         });
                         this.onClickReset();
                     }

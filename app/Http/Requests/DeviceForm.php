@@ -31,6 +31,8 @@ class DeviceForm extends FormRequest
             "good_factor" => "required",
             "acceptable_factor" => "required",
             "broken_factor" => "required",
+            "supplier" => "sometimes|nullable",
+            "manufacturer" => "sometimes|nullable",
         ];
     }
 }
