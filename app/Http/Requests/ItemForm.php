@@ -24,17 +24,16 @@ class ItemForm extends FormRequest
     public function rules()
     {
         return [
-            "date" => "required|date",
-            "supplier" => "required",
-            "manufacturer" => "required",
-            "model" => "required",
-            "colour" => "required",
-            "battery" => "required|numeric|between:0,100",
-            "grade" => "required",
-            "issues" => "sometimes",
-            "cost" => "required|numeric",
-            "imei" => "required",
-            "selling_price" => "sometimes|sumeric",
+            "items" => "required|array|min:1",
+            "items.*.device" => "required",
+            "items.*.issues" => "required|array|min:0",
+            "items.*.colour" => "sometimes",
+            "items.*.battery" => "sometimes|between:0,100",
+            "items.*.grade" => "sometimes",
+            "items.*.cost" => "sometimes|numeric",
+            "items.*.imei" => "sometimes",
+            "items.*.date" => "sometimes|date",
+            "items.*.selling_price" => "sometimes|numeric",
         ];
     }
 }

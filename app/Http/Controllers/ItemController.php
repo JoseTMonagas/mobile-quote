@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ItemForm;
 use App\Models\Item;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ItemController extends Controller
@@ -52,8 +53,12 @@ class ItemController extends Controller
      */
     public function store(ItemForm $request): \Illuminate\Http\JsonResponse
     {
-        $item = Item::create($request->validated());
-        return response()->json($item, 201);
+        $items = $request->validated();
+        $created = [];
+        foreach ($items["items"] as $item) {
+            $created[] = Item::create($item);
+        }
+        return response()->json($created, 201);
     }
 
     /**

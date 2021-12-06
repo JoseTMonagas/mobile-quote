@@ -16,11 +16,10 @@ class CreateItemsTable extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->date("date");
-            $table->string("supplier");
-            $table->string("manufacturer");
-            $table->string("model");
+            $table->json("device");
             $table->string("colour");
             $table->string("battery");
+            $table->string("grade");
             $table->json("issues");
             $table->unsignedFloat("cost");
             $table->string("imei");
