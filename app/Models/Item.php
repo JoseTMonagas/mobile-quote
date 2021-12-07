@@ -10,13 +10,12 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        "date", "device", "colour", "battery",
-        "grade", "issues", "cost",
-        "imei", "selling_price", "sold"
+        "date", "supplier", "manufacturer",
+        "model", "colour", "battery", "grade",
+        "issues", "cost", "imei", "selling_price"
     ];
 
     protected $casts = [
-        "device" => "array",
         "issues" => "array",
     ];
 }

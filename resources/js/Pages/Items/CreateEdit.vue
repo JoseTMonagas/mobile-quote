@@ -8,101 +8,105 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 md:px-8">
-                <div
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg md:p-4"
-                >
+                <div class="bg-white shadow-xl sm:rounded-lg md:p-4">
                     <main
-                        class="w-full inline-flex flex-row flex-wrap my-1 pb-2 border-b"
+                        class="w-full inline-flex flex-col border-b py-2"
                         v-for="item in items"
                     >
-                        <div class="inline-flex flex-col w-3/12">
-                            <label class="md:mt-4" for="device">Device:</label>
-                            <v-select
-                                v-model="item.device"
-                                :options="devices"
-                                label="model"
-                            >
-                                <template v-slot:option="option">
-                                    <main class="flex flex-row align-center">
-                                        <strong class="ml-3">
-                                            {{ option.brand }}
-                                            {{ option.model }}
-                                        </strong>
-                                    </main>
-                                </template>
-                            </v-select>
-                        </div>
-                        <div class="inline-flex flex-col w-3/12 mx-2">
-                            <label class="md:mt-4" for="issues">Issues:</label>
-                            <v-select
-                                v-model="item.issues"
-                                :options="issuesList(item.device)"
-                                label="name"
-                            >
-                            </v-select>
-                        </div>
-                        <div class="inline-flex flex-col w-2/12">
-                            <label class="md:mt-4" for="cost">Cost:</label>
-                            <input
-                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
-                                type="number"
-                                v-model="item.cost"
-                            />
-                        </div>
-                        <div class="inline-flex flex-col w-2/12 mx-2 ">
-                            <label class="md:mt-4" for="selling_price"
-                                >Selling Price:</label
-                            >
-                            <input
-                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
-                                type="number"
-                                v-model="item.selling_price"
-                            />
-                        </div>
-                        <div class="inline-flex flex-col w-2/12">
-                            <label class="md:mt-4" for="imei">IMEI:</label>
-                            <input
-                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
-                                type="text"
-                                v-model="item.imei"
-                            />
-                        </div>
-                        <div class="inline-flex flex-col w-1/12 mx-2">
-                            <label class="md:mt-4" for="colour">Colour:</label>
-                            <input
-                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
-                                type="text"
-                                v-model="item.colour"
-                            />
-                        </div>
-                        <div class="inline-flex flex-col w-1/12 mx-2">
-                            <label class="md:mt-4" for="battery"
-                                >Battery %:</label
-                            >
-                            <input
-                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
-                                type="number"
-                                min="0"
-                                max="100"
-                                v-model="item.battery"
-                            />
-                        </div>
-                        <div class="inline-flex flex-col w-1/12">
-                            <label class="md:mt-4" for="grade">Grade:</label>
-                            <input
-                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
-                                type="text"
-                                v-model="item.grade"
-                            />
-                        </div>
-                        <div class="inline-flex flex-col w-2/12 ml-2">
-                            <label class="md:mt-4" for="date">Date:</label>
-                            <input
-                                class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
-                                type="date"
-                                v-model="item.date"
-                            />
-                        </div>
+                        <section class="grid grid-cols-12 gap-4 my-1">
+                            <div class="inline-flex flex-col col-span-2">
+                                <label for="">Date:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="date"
+                                    v-model="item.date"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col col-span-3">
+                                <label for="">Model:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.model"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col col-span-3">
+                                <label for="">Issues:</label>
+                                <v-select
+                                    multiple
+                                    v-model="item.issues"
+                                    name="device"
+                                    :options="issues"
+                                    label="name"
+                                ></v-select>
+                            </div>
+                            <div class="inline-flex flex-col col-span-2">
+                                <label for="">Cost:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.cost"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col col-span-2">
+                                <label for="">Selling Price:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.selling_price"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col col-span-2">
+                                <label for="">Supplier:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.supplier"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col col-span-2">
+                                <label for="">Manufacturer:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.manufacturer"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col col-span-2">
+                                <label for="">IMEI:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.imei"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col">
+                                <label for="">Colour:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.colour"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col">
+                                <label for="">Battery:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    v-model="item.battery"
+                                />
+                            </div>
+                            <div class="inline-flex flex-col">
+                                <label for="">Grade:</label>
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
+                                    v-model="item.grade"
+                                />
+                            </div>
+                        </section>
                     </main>
                     <section>
                         <button
@@ -157,43 +161,43 @@ export default {
         }
     },
     created() {
-        this.getDevices();
+        axios.get(this.$route("issues.list")).then(resp => {
+            this.issues = resp.data;
+        });
     },
     data: () => {
         return {
-            devices: [],
+            issues: [],
             items: [
                 {
-                    device: undefined,
-                    issues: [],
+                    date: "",
+                    supplier: "",
+                    manufacturer: "",
+                    model: "",
                     colour: "",
                     battery: "",
                     grade: "",
+                    issues: [],
                     cost: "",
                     imei: "",
-                    date: "",
                     selling_price: ""
                 }
             ]
         };
     },
     methods: {
-        issuesList(device) {
-            if (device !== undefined) {
-                return device.issues;
-            }
-            return [];
-        },
         onAddMoreItemsButtonClick() {
             const itemPrototype = {
-                device: undefined,
-                issues: [],
+                date: "",
+                supplier: "",
+                manufacturer: "",
+                model: "",
                 colour: "",
                 battery: "",
                 grade: "",
+                issues: [],
                 cost: "",
                 imei: "",
-                date: new Date().toLocaleDateString(),
                 selling_price: ""
             };
 
@@ -209,11 +213,6 @@ export default {
             };
             axios.post(this.$route("items.store"), newItems).then(resp => {
                 console.log({ resp });
-            });
-        },
-        getDevices() {
-            axios.get(this.$route("devices.list")).then(resp => {
-                this.devices = resp.data;
             });
         }
     }

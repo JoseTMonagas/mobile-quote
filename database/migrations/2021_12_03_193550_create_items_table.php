@@ -16,7 +16,9 @@ class CreateItemsTable extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->date("date");
-            $table->json("device");
+            $table->string("supplier");
+            $table->string("manufacturer");
+            $table->string("model");
             $table->string("colour");
             $table->string("battery");
             $table->string("grade");
