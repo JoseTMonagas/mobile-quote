@@ -17,7 +17,7 @@ class ItemController extends Controller
     public function index(): \Inertia\Response
     {
         $context = [
-            'devices' => Item::whereNull("sold")->get(),
+            'items' => Item::whereNull("sold")->get(),
         ];
 
         return Inertia::render('Items/Index', $context);
@@ -67,25 +67,55 @@ class ItemController extends Controller
      * @param  \App\Models\Item  $item
      * @return \Inertia\Response
      */
-    public function edit(Item $item)
+    public function edit($item): \Inertia\Response
     {
+        $ids = base64_decode(urldecode($item));
+        $ids = explode(";", $ids);
+        $items = Item::whereIn("id", $ids)->get();
         return Inertia::render('Items/CreateEdit', [
-            "item" => $item
+            "editing" => $items
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  ItemForm  $request
-     * @param  \App\Models\Item  $item
+     * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(ItemForm $request, Item $item)
+    public function update(Request $request)
     {
-        if ($item->update($request->validated())) {
-            return response()->json($item, 200);
+        $items = $request->input("items");
+
+        $updated = [];
+        foreach ($items as $item) {
+            $object = Item::find($item["id"]);
+            $object->update($item);
+            $updated[] = $object;
         }
-        return response()->json('ERROR', 500);
+
+        return response()->json($updated);
+    }
+
+    /**
+     * Deletes multiple resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function obliterate(Request $request)
+    {
+        $items = collect($request->input())->pluck("id");
+        $deleted = Item::destroy($items->toArray());
+        return response()->json($deleted);
+    }
+
+    public function correct(Request $request)
+    {
+        $ids = collect($request->input())->toArray();
+        $items = Item::whereIn("id", $ids)->get();
+        return Inertia::render('Items/CreateEdit', [
+            "editing" => $items
+        ]);
     }
 }

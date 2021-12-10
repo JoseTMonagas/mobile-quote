@@ -105,7 +105,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post("locations/{location}/users", [LocationController::class, "users"])->name("locations.users");
 });
 
-Route::group(["prefix" => "ims", "name" => "inventory."], function () {
-    Route::resource("items", ItemController::class)
-        ->except(["show"]);
+Route::group(["prefix" => "inventory", "name" => "inventory."], function () {
+    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+        Route::delete("items/obliterate", [ItemController::class, "obliterate"])->name("items.obliterate");
+        Route::post("items/correct", [ItemController::class, "correct"])->name("items.correct");
+        Route::post("items/update", [ItemController::class, "update"])->name("items.update");
+        Route::resource("items", ItemController::class)
+            ->except(["show", "update"]);
+    });
 });

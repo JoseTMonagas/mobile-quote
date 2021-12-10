@@ -164,12 +164,17 @@ export default {
         axios.get(this.$route("issues.list")).then(resp => {
             this.issues = resp.data;
         });
+
+        if (this.editing != null && this.editing.length > 0) {
+            this.items = [...this.editing];
+        }
     },
     data: () => {
         return {
             issues: [],
             items: [
                 {
+                    id: "",
                     date: "",
                     supplier: "",
                     manufacturer: "",
@@ -211,8 +216,14 @@ export default {
                 date: new Date(),
                 items: this.items
             };
-            axios.post(this.$route("items.store"), newItems).then(resp => {
-                console.log({ resp });
+            let route = this.$route("items.store");
+            if (this.editing != null && this.editing.length > 0) {
+                route = this.$route("items.update");
+            }
+            axios.post(route, newItems).then(response => {
+                if (response.status >= 200 && response.status < 400) {
+                    location.href = this.$route("items.index");
+                }
             });
         }
     }
