@@ -27,6 +27,12 @@ class CreateItemsTable extends Migration
             $table->string("imei");
             $table->unsignedFloat("selling_price")->nullable();
             $table->dateTime("sold")->nullable();
+            $table->foreignId("sale_id")->nullable()->constrained();
+            $table->string("customer")->nullable();
+            $table->unsignedFloat("discount")->nullable();
+            $table->unsignedFloat("tax")->nullable();
+            $table->unsignedFloat("subtotal")->nullable();
+            $table->unsignedFloat("profit")->nullable();
             $table->timestamps();
         });
     }

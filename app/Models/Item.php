@@ -10,12 +10,19 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        "date", "supplier", "manufacturer",
+        "date", "sale_id", "supplier", "manufacturer",
         "model", "colour", "battery", "grade",
-        "issues", "cost", "imei", "selling_price"
+        "issues", "cost", "imei", "selling_price",
+        "customer", "discount", "tax", "subtotal",
+        "profit", "sold"
     ];
 
     protected $casts = [
         "issues" => "array",
     ];
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class);
+    }
 }

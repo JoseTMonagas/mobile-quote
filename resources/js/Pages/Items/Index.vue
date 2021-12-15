@@ -18,10 +18,12 @@
                             >CREATE NEW</nav-link
                         >
                         <span> You have selected: {{ totalSelected }} </span>
-                        <nav-link
+                        <button
                             class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
-                            >SELL SELECTED</nav-link
+                            @click="onSell()"
                         >
+                            SELL SELECTED
+                        </button>
                         <button
                             class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             @click="onEdit()"
@@ -50,6 +52,12 @@
                         </template>
                         <template #actions="{ item }">
                             <button
+                                class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
+                                @click="onSell(item)"
+                            >
+                                SELL
+                            </button>
+                            <button
                                 class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                                 @click="onEdit(item.id)"
                             >
@@ -68,6 +76,107 @@
                 </div>
             </div>
         </div>
+        <dialog-modal :show="dlgConfirmation">
+            <template #title> </template>
+            <template #content>
+                <header class="grid grid-cols-8 gap-4">
+                    <div class="col-span-2">
+                        <label for="date">Date:</label>
+                        <input
+                            class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                            type="date"
+                            v-model="saleDate"
+                        />
+                    </div>
+                    <div class="col-span-1">
+                        <label for="discount">Discount:</label>
+                        <input
+                            class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                            type="number"
+                            min="0"
+                            v-model="discount"
+                        />
+                    </div>
+                    <div class="col-span-1">
+                        <label for="tax">Tax %:</label>
+                        <input
+                            class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                            type="number"
+                            min="0"
+                            max="100"
+                            v-model="tax"
+                        />
+                    </div>
+                    <div class="col-span-4">
+                        <label for="customer">Customer:</label>
+                        <input
+                            class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                            type="text"
+                            v-model="customer"
+                        />
+                    </div>
+                </header>
+                <table class="min-w-full">
+                    <thead class="min-w-full">
+                        <tr class="min-w-full border-b">
+                            <th class="p-2 text-left w-2/5">Device</th>
+                            <th class="p-2 text-left w-1/5">Selling Price</th>
+                            <th class="p-2 text-right w-1/5">Discount</th>
+                            <th class="p-2 text-right w-1/5">Tax</th>
+                            <th class="p-2 text-right w-1/5">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="min-w-full">
+                        <template v-if="saleItems.length > 0">
+                            <tr
+                                v-for="item in saleItems"
+                                class="min-w-full border-b"
+                            >
+                                <td class="p-1 text-left">
+                                    {{ item.model }}
+                                </td>
+                                <td>
+                                    <input
+                                        class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                        type="number"
+                                        v-model="item.selling_price"
+                                    />
+                                </td>
+                                <td class="text-right">
+                                    {{ discountItem(item) }}
+                                </td>
+                                <td class="text-right">
+                                    {{ taxItem(item) }}
+                                </td>
+                                <td class="text-right">
+                                    {{ subtotalItem(item) }}
+                                </td>
+                            </tr>
+                        </template>
+                        <template v-else>
+                            <tr>
+                                <td colspan="3">
+                                    No devices added to this quote!
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                <footer class="inline-flex flex-col w-full text-right mt-2">
+                    <span class="mt-1 border-t"> Total: $ {{ total }}</span>
+                </footer>
+            </template>
+            <template #footer>
+                <div class="flex flex-col justify-center">
+                    <button
+                        class="bg-blue-800 text-white rounded px-3 py-2 hover:bg-blue-300 hover:text-gray-800"
+                        @click="onSellConfirm()"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </template>
+        </dialog-modal>
     </app-layout>
 </template>
 
@@ -77,11 +186,13 @@ import Table from "@/Components/Table";
 import NavLink from "@/Jetstream/NavLink";
 import Button from "@/Jetstream/Button";
 import Checkbox from "@/Jetstream/Checkbox";
+import DialogModal from "@/Jetstream/DialogModal";
 
 export default {
     components: {
         AppLayout,
         NavLink,
+        DialogModal,
         "x-table": Table,
         "x-button": Button,
         "x-checkbox": Checkbox
@@ -103,6 +214,16 @@ export default {
     computed: {
         totalSelected() {
             return this.inventory.filter(item => item.selected).length;
+        },
+        total() {
+            if (this.saleItems.length > 0) {
+                let total = 0;
+                for (const item of this.saleItems) {
+                    total += this.subtotalItem(item);
+                }
+                return total;
+            }
+            return 0;
         }
     },
 
@@ -122,7 +243,13 @@ export default {
                 { text: "Amount", value: "selling_price" },
                 { text: "Actions", value: "actions" }
             ],
-            inventory: []
+            inventory: [],
+            saleItems: {},
+            dlgConfirmation: false,
+            saleDate: "",
+            discount: 0,
+            tax: 0,
+            customer: ""
         };
     },
 
@@ -250,6 +377,76 @@ export default {
             }
 
             window.location.href = this.$route("items.edit", btoa(items));
+        },
+        onSell: function(item = undefined) {
+            let items = [];
+            if (item === undefined) {
+                items = this.inventory.filter(item => item.selected);
+            } else {
+                items.push(item);
+            }
+            this.saleItems = items;
+            this.dlgConfirmation = true;
+        },
+        onSellConfirm: function() {
+            let sale = [];
+            for (const item of this.saleItems) {
+                sale.push({
+                    ...item,
+                    sold: this.saleDate,
+                    customer: this.customer,
+                    discount: this.discountItem(item),
+                    tax: this.taxItem(item),
+                    subtotal: this.subtotalItem(item),
+                    profit: this.subtotalItem(item) - item.cost
+                });
+            }
+            axios
+                .post(this.$route("sales.store"), sale)
+                .catch(error => {
+                    if (error.response) {
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: error.response.data,
+                            icon: "error"
+                        });
+                    } else if (error.request) {
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: error.request,
+                            icon: "error"
+                        });
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        Swal.fire({
+                            title: "An Error has ocurred!",
+                            text: error.message,
+                            icon: "error"
+                        });
+                    }
+                })
+                .then(response => {
+                    if (response.status >= 200 && response.status < 400) {
+                        let url = decodeURI(response.data);
+                        window.open(url);
+                    }
+                });
+        },
+        discountItem(item) {
+            let discount = item.selling_price - this.discount;
+            if (discount <= 0) return 0;
+            return discount;
+        },
+        taxItem(item) {
+            return this.discountItem(item) * (this.tax / 100);
+        },
+        subtotalItem(item) {
+            return this.discountItem(item) - this.taxItem(item);
         }
     }
 };

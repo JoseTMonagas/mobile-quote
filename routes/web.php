@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\SaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -112,5 +113,8 @@ Route::group(["prefix" => "inventory", "name" => "inventory."], function () {
         Route::post("items/update", [ItemController::class, "update"])->name("items.update");
         Route::resource("items", ItemController::class)
             ->except(["show", "update"]);
+
+        Route::post("sales", [SaleController::class, "store"])->name("sales.store");
+        Route::get("sale/{sale}/receipt", [SaleController::class, "receipt"])->name("sales.receipt");
     });
 });
