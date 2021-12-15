@@ -248,7 +248,7 @@ export default {
         "x-input": Input,
         "x-checkbox": Checkbox,
         "v-select": vSelect,
-        "v-radio": Radio,
+        "v-radio": Radio
     },
 
     created() {
@@ -259,8 +259,8 @@ export default {
         storePercent: {
             type: Number,
             default: 0,
-            required: true,
-        },
+            required: true
+        }
     },
 
     data: () => {
@@ -275,13 +275,13 @@ export default {
             internalNumber: "",
             accountRemoved: false,
             factoryReset: false,
-            dlgConfirmation: false,
+            dlgConfirmation: false
         };
     },
 
     methods: {
         getDevices() {
-            axios.get(this.$route("devices.list")).then((resp) => {
+            axios.get(this.$route("devices.list")).then(resp => {
                 this.devices = resp.data;
             });
         },
@@ -364,20 +364,19 @@ export default {
                 condition: this.condition,
                 issues: this.issues,
                 value: this.quote,
-                serialNumber: this.serialNumber,
+                serialNumber: this.serialNumber
             };
 
             const quotePrototype = {
                 name: this.quoteName,
                 internal_number: this.internalNumber,
                 store_margin: this.storePercent,
-                items: [itemsPrototype],
+                items: [itemsPrototype]
             };
 
-            debugger;
             axios
                 .post(this.$route("quotes.store"), quotePrototype)
-                .then((resp) => {
+                .then(resp => {
                     const quote_id = resp.data.id;
                     if (Number.isInteger(quote_id) && quote_id > 0) {
                         window.open(this.$route("quotes.receipt", quote_id));
@@ -386,7 +385,7 @@ export default {
 
             this.onClickReset();
             this.dlgConfirmation = false;
-        },
-    },
+        }
+    }
 };
 </script>
