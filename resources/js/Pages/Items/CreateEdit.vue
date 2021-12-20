@@ -220,11 +220,25 @@ export default {
             if (this.editing != null && this.editing.length > 0) {
                 route = this.$route("items.update");
             }
-            axios.post(route, newItems).then(response => {
-                if (response.status >= 200 && response.status < 400) {
-                    location.href = this.$route("items.index");
-                }
-            });
+            axios
+                .post(route, newItems, { responseType: "blob" })
+                .then(response => {
+                    if (response.status >= 200 && response.status < 400) {
+                        window.open(URL.createObjectURL(response.data));
+                    }
+                });
+        },
+        downloadFile(blob, filename) {
+            const link = document.createElement("a");
+            // create a blobURI pointing to our Blob
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            // some browser needs the anchor to be in the doc
+            document.body.append(link);
+            link.click();
+            link.remove();
+            // in case the Blob uses a lot of memory
+            setTimeout(() => URL.revokeObjectURL(link.href), 7000);
         }
     }
 };

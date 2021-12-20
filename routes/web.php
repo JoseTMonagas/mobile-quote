@@ -111,6 +111,7 @@ Route::group(["prefix" => "inventory", "name" => "inventory."], function () {
         Route::delete("items/obliterate", [ItemController::class, "obliterate"])->name("items.obliterate");
         Route::post("items/correct", [ItemController::class, "correct"])->name("items.correct");
         Route::post("items/update", [ItemController::class, "update"])->name("items.update");
+        Route::get("items/{item}/label", [ItemController::class, "label"])->name("items.label");
         Route::resource("items", ItemController::class)
             ->except(["show", "update"]);
 

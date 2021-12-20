@@ -6,6 +6,7 @@ use App\Http\Requests\ItemForm;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class ItemController extends Controller
 {
@@ -81,9 +82,9 @@ class ItemController extends Controller
      * Update the specified resource in storage.
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request)
+    public function update(Request $request): \Illuminate\Http\JsonResponse
     {
         $items = $request->input("items");
 
@@ -103,19 +104,38 @@ class ItemController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function obliterate(Request $request)
+    public function obliterate(Request $request): \Illuminate\Http\JsonResponse
     {
         $items = collect($request->input())->pluck("id");
         $deleted = Item::destroy($items->toArray());
         return response()->json($deleted);
     }
 
-    public function correct(Request $request)
+    /**
+     * Updates multiple resource.
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function correct(Request $request): \Inertia\Response
     {
         $ids = collect($request->input())->toArray();
         $items = Item::whereIn("id", $ids)->get();
         return Inertia::render('Items/CreateEdit', [
             "editing" => $items
         ]);
+    }
+
+
+    /**
+     * Generates a pdf label for a single resource.
+     *
+     * @param Item $item
+     * @return \Illuminate\Http\Response
+     */
+    public function label(Item $item): \Illuminate\Http\Response
+    {
+        $pdf = PDF::loadView("label", compact("item"))->setOptions(["defaultFont" => "sans-serif", "isRemoteEnabled" => "true"])->setPaper("a6", "landscape");
+        return $pdf->stream();
     }
 }

@@ -51,6 +51,12 @@
                             </span>
                         </template>
                         <template #actions="{ item }">
+                            <a
+                                class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                                :href="$route('items.label', item.id)"
+                            >
+                                LABEL
+                            </a>
                             <button
                                 class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
                                 @click="onSell(item)"
