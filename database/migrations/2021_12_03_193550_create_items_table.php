@@ -15,16 +15,16 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->date("date");
-            $table->string("supplier");
-            $table->string("manufacturer");
-            $table->string("model");
-            $table->string("colour");
-            $table->string("battery");
-            $table->string("grade");
-            $table->json("issues");
-            $table->unsignedFloat("cost");
-            $table->string("imei");
+            $table->date("date")->nullable();
+            $table->string("supplier")->nullable();
+            $table->string("manufacturer")->nullable();
+            $table->string("model")->nullable();
+            $table->string("colour")->nullable();
+            $table->string("battery")->nullable();
+            $table->string("grade")->nullable();
+            $table->string("issues")->nullable();
+            $table->unsignedFloat("cost")->nullable();
+            $table->string("imei")->nullable();
             $table->unsignedFloat("selling_price")->nullable();
             $table->dateTime("sold")->nullable();
             $table->foreignId("sale_id")->nullable()->constrained();

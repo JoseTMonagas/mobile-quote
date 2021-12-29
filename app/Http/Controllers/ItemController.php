@@ -25,6 +25,20 @@ class ItemController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Inertia\Response
+     */
+    public function public(): \Inertia\Response
+    {
+        $context = [
+            'items' => Item::whereNull("sold")->get(),
+        ];
+
+        return Inertia::render('Items/Public', $context);
+    }
+
+    /**
      * Return a list of resources
      *
      * @return \Illuminate\Http\Response

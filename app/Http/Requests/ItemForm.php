@@ -25,10 +25,10 @@ class ItemForm extends FormRequest
     {
         return [
             "items" => "required|array|min:1",
-            "items.*.supplier" => "required",
-            "items.*.manufacturer" => "required",
-            "items.*.model" => "required",
-            "items.*.issues" => "required|array|min:0",
+            "items.*.supplier" => "sometimes",
+            "items.*.manufacturer" => "sometimes",
+            "items.*.model" => "sometimes",
+            "items.*.issues" => "sometimes",
             "items.*.colour" => "sometimes",
             "items.*.battery" => "sometimes|between:0,100",
             "items.*.grade" => "sometimes",

@@ -32,13 +32,11 @@
                             </div>
                             <div class="inline-flex flex-col col-span-3">
                                 <label for="">Issues:</label>
-                                <v-select
-                                    multiple
+                                <input
+                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                    type="text"
                                     v-model="item.issues"
-                                    name="device"
-                                    :options="issues"
-                                    label="name"
-                                ></v-select>
+                                />
                             </div>
                             <div class="inline-flex flex-col col-span-2">
                                 <label for="">Cost:</label>
@@ -161,10 +159,6 @@ export default {
         }
     },
     created() {
-        axios.get(this.$route("issues.list")).then(resp => {
-            this.issues = resp.data;
-        });
-
         if (this.editing != null && this.editing.length > 0) {
             this.items = [...this.editing];
         }
@@ -182,7 +176,7 @@ export default {
                     colour: "",
                     battery: "",
                     grade: "",
-                    issues: [],
+                    issues: "",
                     cost: "",
                     imei: "",
                     selling_price: ""
@@ -200,7 +194,7 @@ export default {
                 colour: "",
                 battery: "",
                 grade: "",
-                issues: [],
+                issues: "",
                 cost: "",
                 imei: "",
                 selling_price: ""
@@ -224,21 +218,9 @@ export default {
                 .post(route, newItems, { responseType: "blob" })
                 .then(response => {
                     if (response.status >= 200 && response.status < 400) {
-                        window.open(URL.createObjectURL(response.data));
+                        location.href = this.$route("items.index");
                     }
                 });
-        },
-        downloadFile(blob, filename) {
-            const link = document.createElement("a");
-            // create a blobURI pointing to our Blob
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            // some browser needs the anchor to be in the doc
-            document.body.append(link);
-            link.click();
-            link.remove();
-            // in case the Blob uses a lot of memory
-            setTimeout(() => URL.revokeObjectURL(link.href), 7000);
         }
     }
 };

@@ -42,6 +42,15 @@
                         <template #select="{ item }">
                             <x-checkbox v-model="item.selected"></x-checkbox>
                         </template>
+                        <template #battery="{ item }">
+                            {{ item.battery }} %
+                        </template>
+                        <template #cost="{ item }">
+                            $ {{ item.cost }}
+                        </template>
+                        <template #selling_price="{ item }">
+                            $ {{ item.selling_price }}
+                        </template>
                         <template #issues="{item}">
                             <span v-for="(issue, index) in item.issues">
                                 {{ issue.name }}
@@ -57,33 +66,17 @@
                             >
                                 LABEL
                             </a>
-                            <button
-                                class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
-                                @click="onSell(item)"
-                            >
-                                SELL
-                            </button>
-                            <button
-                                class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                                @click="onEdit(item.id)"
-                            >
-                                EDIT
-                            </button>
-                            <button
-                                class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
-                                @click="
-                                    onDelete($route('items.destroy', item.id))
-                                "
-                            >
-                                DELETE
-                            </button>
                         </template>
                     </x-table>
                 </div>
             </div>
         </div>
         <dialog-modal :show="dlgConfirmation">
-            <template #title> </template>
+            <template #title>
+                <button @click="dlgConfirmation = !dlgConfirmation">
+                    &times;
+                </button>
+            </template>
             <template #content>
                 <header class="grid grid-cols-8 gap-4">
                     <div class="col-span-2">
@@ -123,38 +116,83 @@
                     </div>
                 </header>
                 <table class="min-w-full">
-                    <thead class="min-w-full">
-                        <tr class="min-w-full border-b">
-                            <th class="p-2 text-left w-2/5">Device</th>
-                            <th class="p-2 text-left w-1/5">Selling Price</th>
-                            <th class="p-2 text-right w-1/5">Discount</th>
-                            <th class="p-2 text-right w-1/5">Tax</th>
-                            <th class="p-2 text-right w-1/5">Subtotal</th>
+                    <thead class="min-w-full bg-white border-b">
+                        <tr>
+                            <th
+                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
+                            >
+                                Device
+                            </th>
+                            <th
+                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
+                            >
+                                Issues
+                            </th>
+                            <th
+                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
+                            >
+                                IMEI
+                            </th>
+                            <th
+                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-3/12"
+                            >
+                                Selling Price
+                            </th>
+                            <th
+                                class="text-sm font-medium text-gray-900 px-6 py-4 text-right w-1/12"
+                            >
+                                Discount
+                            </th>
+                            <th
+                                class="text-sm font-medium text-gray-900 px-6 py-4 text-right w-1/12"
+                            >
+                                Tax
+                            </th>
+                            <th
+                                class="text-sm font-medium text-gray-900 px-6 py-4 text-right w-1/12"
+                            >
+                                Subtotal
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="min-w-full">
                         <template v-if="saleItems.length > 0">
-                            <tr
-                                v-for="item in saleItems"
-                                class="min-w-full border-b"
-                            >
-                                <td class="p-1 text-left">
+                            <tr v-for="item in saleItems" class="border-b">
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-left w-2/12"
+                                >
                                     {{ item.model }}
                                 </td>
-                                <td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-left w-2/12"
+                                >
+                                    {{ item.issues }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-left w-2/12"
+                                >
+                                    {{ item.imei }}
+                                </td>
+                                <td class="whitespace-nowrap text-left w-3/12">
                                     <input
                                         class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
                                         type="number"
                                         v-model="item.selling_price"
                                     />
                                 </td>
-                                <td class="text-right">
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-right w-1/12"
+                                >
                                     {{ discountItem(item) }}
                                 </td>
-                                <td class="text-right">
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-right w-1/12"
+                                >
                                     {{ taxItem(item) }}
                                 </td>
-                                <td class="text-right">
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-right w-1/12"
+                                >
                                     {{ subtotalItem(item) }}
                                 </td>
                             </tr>
@@ -173,12 +211,18 @@
                 </footer>
             </template>
             <template #footer>
-                <div class="flex flex-col justify-center">
+                <div class="flex flex-row justify-around">
+                    <button
+                        class="bg-gray-800 text-white rounded px-3 py-2 hover:bg-gray-300 hover:text-gray-800"
+                        @click="onSellCancel()"
+                    >
+                        CANCEL
+                    </button>
                     <button
                         class="bg-blue-800 text-white rounded px-3 py-2 hover:bg-blue-300 hover:text-gray-800"
                         @click="onSellConfirm()"
                     >
-                        Confirm
+                        CONFIRM
                     </button>
                 </div>
             </template>
@@ -246,7 +290,7 @@ export default {
                 { text: "Issues", value: "issues" },
                 { text: "IMEI", value: "imei" },
                 { text: "Cost", value: "cost" },
-                { text: "Amount", value: "selling_price" },
+                { text: "Est. Sale", value: "selling_price" },
                 { text: "Actions", value: "actions" }
             ],
             inventory: [],
@@ -440,6 +484,7 @@ export default {
                     if (response.status >= 200 && response.status < 400) {
                         let url = decodeURI(response.data);
                         window.open(url);
+                        this.onSellCancel();
                     }
                 });
         },
@@ -449,10 +494,17 @@ export default {
             return discount;
         },
         taxItem(item) {
-            return this.discountItem(item) * (this.tax / 100);
+            return Math.round(this.discountItem(item) * (this.tax / 100));
         },
         subtotalItem(item) {
-            return this.discountItem(item) - this.taxItem(item);
+            return this.discountItem(item) + this.taxItem(item);
+        },
+        onSellCancel() {
+            this.saleDate = "";
+            this.discount = 0;
+            this.tax = 0;
+            this.customer = "";
+            this.dlgConfirmation = false;
         }
     }
 };
