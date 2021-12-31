@@ -17,10 +17,6 @@ class Item extends Model
         "profit", "sold"
     ];
 
-    protected $casts = [
-        "issues" => "array",
-    ];
-
     public function sale()
     {
         return $this->belongsTo(Sale::class);

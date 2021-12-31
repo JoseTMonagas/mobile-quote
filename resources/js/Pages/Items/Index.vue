@@ -36,6 +36,13 @@
                         >
                             DELETE SELECTED
                         </button>
+
+                        <button
+                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
+                            @click="onClickExport()"
+                        >
+                            EXPORT
+                        </button>
                     </header>
 
                     <x-table :headers="headers" :items="inventory">
@@ -43,20 +50,16 @@
                             <x-checkbox v-model="item.selected"></x-checkbox>
                         </template>
                         <template #battery="{ item }">
-                            {{ item.battery }} %
+                            <span v-if="item.battery">
+                                {{ item.battery }} %
+                            </span>
                         </template>
                         <template #cost="{ item }">
-                            $ {{ item.cost }}
+                            <span v-if="item.cost"> $ {{ item.cost }} </span>
                         </template>
                         <template #selling_price="{ item }">
-                            $ {{ item.selling_price }}
-                        </template>
-                        <template #issues="{item}">
-                            <span v-for="(issue, index) in item.issues">
-                                {{ issue.name }}
-                                <span v-if="index != item.issues.length - 1">
-                                    ,
-                                </span>
+                            <span v-if="item.selling_price">
+                                $ {{ item.selling_price }}
                             </span>
                         </template>
                         <template #actions="{ item }">
@@ -71,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <dialog-modal :show="dlgConfirmation">
+        <dialog-modal :show="dlgConfirmation" class="w-50">
             <template #title>
                 <button @click="dlgConfirmation = !dlgConfirmation">
                     &times;
@@ -159,39 +162,39 @@
                         <template v-if="saleItems.length > 0">
                             <tr v-for="item in saleItems" class="border-b">
                                 <td
-                                    class="px-6 py-4 whitespace-nowrap text-left w-2/12"
+                                    class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
                                 >
                                     {{ item.model }}
                                 </td>
                                 <td
-                                    class="px-6 py-4 whitespace-nowrap text-left w-2/12"
+                                    class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
                                 >
                                     {{ item.issues }}
                                 </td>
                                 <td
-                                    class="px-6 py-4 whitespace-nowrap text-left w-2/12"
+                                    class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
                                 >
                                     {{ item.imei }}
                                 </td>
                                 <td class="whitespace-nowrap text-left w-3/12">
                                     <input
-                                        class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-full"
+                                        class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-xs border border-gray-400 outline-none focus:outline-none w-full"
                                         type="number"
                                         v-model="item.selling_price"
                                     />
                                 </td>
                                 <td
-                                    class="px-6 py-4 whitespace-nowrap text-right w-1/12"
+                                    class="px-6 py-4 whitespace-nowrap text-right text-xs w-1/12"
                                 >
                                     {{ discountItem(item) }}
                                 </td>
                                 <td
-                                    class="px-6 py-4 whitespace-nowrap text-right w-1/12"
+                                    class="px-6 py-4 whitespace-nowrap text-right text-xs w-1/12"
                                 >
                                     {{ taxItem(item) }}
                                 </td>
                                 <td
-                                    class="px-6 py-4 whitespace-nowrap text-right w-1/12"
+                                    class="px-6 py-4 whitespace-nowrap text-right text-xs w-1/12"
                                 >
                                     {{ subtotalItem(item) }}
                                 </td>
@@ -238,6 +241,8 @@ import Button from "@/Jetstream/Button";
 import Checkbox from "@/Jetstream/Checkbox";
 import DialogModal from "@/Jetstream/DialogModal";
 
+import XLSX from "xlsx";
+
 export default {
     components: {
         AppLayout,
@@ -269,9 +274,9 @@ export default {
             if (this.saleItems.length > 0) {
                 let total = 0;
                 for (const item of this.saleItems) {
-                    total += this.subtotalItem(item);
+                    total += parseFloat(this.subtotalItem(item));
                 }
-                return total;
+                return +total.toFixed(2);
             }
             return 0;
         }
@@ -281,6 +286,7 @@ export default {
         return {
             headers: [
                 { text: "Select", value: "select" },
+                { text: "Date", value: "date" },
                 { text: "Supplier", value: "supplier" },
                 { text: "Manufacturer", value: "manufacturer" },
                 { text: "Model", value: "model" },
@@ -494,10 +500,14 @@ export default {
             return discount;
         },
         taxItem(item) {
-            return Math.round(this.discountItem(item) * (this.tax / 100));
+            return +parseFloat(
+                this.discountItem(item) * (this.tax / 100)
+            ).toFixed(2);
         },
         subtotalItem(item) {
-            return this.discountItem(item) + this.taxItem(item);
+            return +parseFloat(
+                this.discountItem(item) + this.taxItem(item)
+            ).toFixed(2);
         },
         onSellCancel() {
             this.saleDate = "";
@@ -505,6 +515,19 @@ export default {
             this.tax = 0;
             this.customer = "";
             this.dlgConfirmation = false;
+        },
+        onClickExport() {
+            let workbook = XLSX.utils.book_new();
+            workbook.Props = {
+                Title: "Items",
+                CreatedDate: new Date()
+            };
+
+            workbook.SheetNames.push("Items");
+            let worksheet = XLSX.utils.json_to_sheet(this.inventory);
+            workbook.Sheets["Items"] = worksheet;
+
+            XLSX.writeFile(workbook, "Items.xlsx");
         }
     }
 };

@@ -23,15 +23,15 @@
             <th>Manufacturer</th>
             <th>Model</th>
             <th>Grade</th>
+            <th>IMEI:</th>
+            <th>Issues:</th>
         </tr>
         <tr>
             <td>{{ $item["manufacturer"]  }}</td>
             <td>{{ $item["model"]  }}</td>
             <td>{{ $item["grade"]  }}</td>
-        </tr>
-        <tr>
-            <th>IMEI:</th>
-            <td colspan="2">
+            <td>{{ $item["issues"] }}</td>
+            <td>
                 {{ $item["imei"]  }}
             </td>
         </tr>

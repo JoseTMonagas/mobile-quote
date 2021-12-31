@@ -30,12 +30,12 @@ class ItemForm extends FormRequest
             "items.*.model" => "sometimes",
             "items.*.issues" => "sometimes",
             "items.*.colour" => "sometimes",
-            "items.*.battery" => "sometimes|between:0,100",
+            "items.*.battery" => "sometimes",
             "items.*.grade" => "sometimes",
-            "items.*.cost" => "sometimes|numeric",
+            "items.*.cost" => "sometimes",
             "items.*.imei" => "sometimes",
-            "items.*.date" => "sometimes|date",
-            "items.*.selling_price" => "sometimes|numeric",
+            "items.*.date" => "sometimes",
+            "items.*.selling_price" => "sometimes",
         ];
     }
 }
