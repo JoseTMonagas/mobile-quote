@@ -42,9 +42,9 @@
         <thead>
             <tr>
                 <th class="text-right" scope="col">DEVICE</th>
+                <th class="text-right" scope="col">ISSUES</th>
+                <th class="text-right" scope="col">IMEI</th>
                 <th class="text-right" scope="col">PRICE</th>
-                <th class="text-right" scope="col">TAX</th>
-                <th class="text-right" scope="col">SUBTOTAL</th>
             </tr>
         </thead>
         <tbody>
@@ -54,13 +54,13 @@
                     {{ $item["model"]  }}
                 </td>
                 <td class="text-right">
-                    $ {{ number_format($item["discount"], 0)  }}
+                    {{ $item["issues"]  }}
                 </td>
                 <td class="text-right">
-                    $ {{ number_format($item["tax"], 0)  }}
+                    {{ $item["imei"]  }}
                 </td>
                 <td class="text-right">
-                    $ {{ number_format($item["subtotal"], 0)  }}
+                    $ {{ number_format($item["selling_price"], 0)  }}
                 </td>
             </tr>
             @endforeach
@@ -71,11 +71,27 @@
             <table class="table table-striped pb-4">
                 <tr>
                     <td class="text-right">
-                        <b>TOTAL:</b>
-                        $ {{ number_format($total, 0)  }}
+                        <b>SUBTOTAL:</b>
+                        $ {{ number_format($sale->subtotal, 0)  }}
                     </td>
                 </tr>
                 <tr>
+                    <td class="text-right">
+                        <b>DISCOUNT:</b>
+                        $ {{ number_format($sale->discount, 0)  }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">
+                        <b>TAX:</b>
+                        $ {{ number_format($sale->flatTax, 0)  }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">
+                        <b>TOTAL:</b>
+                        $ {{ number_format($sale->total, 0)  }}
+                    </td>
                 </tr>
             </table>
         </div>

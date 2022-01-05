@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sale extends Model
 {
     use HasFactory;
-    protected $fillable = ["user_id"];
+    protected $fillable = ["user_id", "subtotal", "discount", "flatTax", "tax", "total"];
 
     public function items()
     {

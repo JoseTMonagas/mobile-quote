@@ -16,6 +16,10 @@ class CreateSalesTable extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")->constrained();
+            $table->string("subtotal");
+            $table->string("discount");
+            $table->string("tax");
+            $table->string("total");
             $table->timestamps();
         });
     }

@@ -24,12 +24,16 @@ class SaleForm extends FormRequest
     public function rules()
     {
         return [
-            "*" => "array",
-            "*.id" => "required|exists:items,id",
-            "*.sold" => "required|date",
-            "*.customer" => "required",
-            "*.subtotal" => "required|numeric",
-            "*.profit" => "required|numeric",
+            "subtotal" => "required|numeric",
+            "discount" => "required|numeric",
+            "flatTax" => "required|numeric",
+            "tax" => "required|numeric",
+            "total" => "required|numeric",
+            "items" => "required|array|min:1",
+            "items.*.id" => "required|exists:items,id",
+            "items.*.sold" => "required|date",
+            "items.*.customer" => "required",
+            "items.*.profit" => "required|numeric",
         ];
     }
 }

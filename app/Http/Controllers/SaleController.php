@@ -20,10 +20,10 @@ class SaleController extends Controller
      */
     public function store(SaleForm $request)
     {
-        $sale = Sale::create([
-            "user_id" => Auth::user()->id
-        ]);
-        foreach ($request->validated() as $sale_item) {
+        $form = $request->validated();
+        $form["user_id"] = Auth::user()->id;
+        $sale = Sale::create($form);
+        foreach ($form["items"] as $sale_item) {
             $sale_item["sale_id"] = $sale->id;
             $sale_item["sold"] = Carbon::now();
             unset($sale_item["selected"]);
@@ -42,11 +42,7 @@ class SaleController extends Controller
      */
     public function receipt(Sale $sale)
     {
-        $total = 0;
-        foreach ($sale->items as $item) {
-            $total += $item->subtotal;
-        }
-        $pdf = PDF::loadView("sale-receipt", compact("sale", "total"))
+        $pdf = PDF::loadView("sale-receipt", compact("sale"))
             ->setOptions([
                 'defaultFont' => 'sans-serif',
                 'isRemoteEnabled' => 'true',

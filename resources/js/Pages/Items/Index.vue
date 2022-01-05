@@ -141,21 +141,6 @@
                             >
                                 Selling Price
                             </th>
-                            <th
-                                class="text-sm font-medium text-gray-900 px-6 py-4 text-right w-1/12"
-                            >
-                                Discount
-                            </th>
-                            <th
-                                class="text-sm font-medium text-gray-900 px-6 py-4 text-right w-1/12"
-                            >
-                                Tax
-                            </th>
-                            <th
-                                class="text-sm font-medium text-gray-900 px-6 py-4 text-right w-1/12"
-                            >
-                                Subtotal
-                            </th>
                         </tr>
                     </thead>
                     <tbody class="min-w-full">
@@ -183,21 +168,6 @@
                                         v-model="item.selling_price"
                                     />
                                 </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-right text-xs w-1/12"
-                                >
-                                    {{ discountItem(item) }}
-                                </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-right text-xs w-1/12"
-                                >
-                                    {{ taxItem(item) }}
-                                </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-right text-xs w-1/12"
-                                >
-                                    {{ subtotalItem(item) }}
-                                </td>
                             </tr>
                         </template>
                         <template v-else>
@@ -210,7 +180,9 @@
                     </tbody>
                 </table>
                 <footer class="inline-flex flex-col w-full text-right mt-2">
-                    <span class="mt-1 border-t"> Total: $ {{ total }}</span>
+                    <span class="mt-1"> Subtotal: $ {{ subtotal }}</span>
+                    <span class="mt-1"> Tax: $ {{ flatTax }}</span>
+                    <span class="mt-1"> Total: $ {{ total }}</span>
                 </footer>
             </template>
             <template #footer>
@@ -270,13 +242,25 @@ export default {
         totalSelected() {
             return this.inventory.filter(item => item.selected).length;
         },
+        subtotal() {
+            if (this.saleItems.length > 0) {
+                let subtotal = 0;
+                for (const item of this.saleItems) {
+                    subtotal += item.selling_price - this.discount;
+                }
+                return +subtotal.toFixed(2);
+            }
+            return 0;
+        },
+        flatTax() {
+            if (this.saleItems.length > 0) {
+                return +parseFloat(this.subtotal * (this.tax / 100)).toFixed(2);
+            }
+            return 0;
+        },
         total() {
             if (this.saleItems.length > 0) {
-                let total = 0;
-                for (const item of this.saleItems) {
-                    total += parseFloat(this.subtotalItem(item));
-                }
-                return +total.toFixed(2);
+                return +parseFloat(this.subtotal + this.flatTax).toFixed(2);
             }
             return 0;
         }
@@ -310,60 +294,6 @@ export default {
     },
 
     methods: {
-        onDelete: function(url) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then(result => {
-                if (result.isConfirmed) {
-                    axios
-                        .delete(url)
-                        .catch(error => {
-                            if (error.response) {
-                                // The request was made and the server responded with a status code
-                                // that falls out of the range of 2xx
-                                Swal.fire({
-                                    title: "An Error has ocurred!",
-                                    text: error.response.data,
-                                    icon: "error"
-                                });
-                            } else if (error.request) {
-                                // The request was made but no response was received
-                                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                                // http.ClientRequest in node.js
-                                Swal.fire({
-                                    title: "An Error has ocurred!",
-                                    text: error.request,
-                                    icon: "error"
-                                });
-                            } else {
-                                // Something happened in setting up the request that triggered an Error
-                                Swal.fire({
-                                    title: "An Error has ocurred!",
-                                    text: error.message,
-                                    icon: "error"
-                                });
-                            }
-                        })
-                        .then(response => {
-                            if (
-                                response.status >= 200 &&
-                                response.status < 400
-                            ) {
-                                Swal.fire({
-                                    title: "Deleted!",
-                                    icon: "success"
-                                }).then(location.reload());
-                            }
-                        });
-                }
-            });
-        },
         onDeleteMultiple: function() {
             Swal.fire({
                 title: "Are you sure?",
@@ -445,16 +375,20 @@ export default {
             this.dlgConfirmation = true;
         },
         onSellConfirm: function() {
-            let sale = [];
+            let sale = {
+                subtotal: this.subtotal,
+                discount: this.discount,
+                flatTax: this.flatTax,
+                tax: this.tax,
+                total: this.total,
+                items: []
+            };
             for (const item of this.saleItems) {
-                sale.push({
+                sale.items.push({
                     ...item,
                     sold: this.saleDate,
                     customer: this.customer,
-                    discount: this.discountItem(item),
-                    tax: this.taxItem(item),
-                    subtotal: this.subtotalItem(item),
-                    profit: this.subtotalItem(item) - item.cost
+                    profit: item.selling_price - item.cost
                 });
             }
             axios
@@ -493,21 +427,6 @@ export default {
                         this.onSellCancel();
                     }
                 });
-        },
-        discountItem(item) {
-            let discount = item.selling_price - this.discount;
-            if (discount <= 0) return 0;
-            return discount;
-        },
-        taxItem(item) {
-            return +parseFloat(
-                this.discountItem(item) * (this.tax / 100)
-            ).toFixed(2);
-        },
-        subtotalItem(item) {
-            return +parseFloat(
-                this.discountItem(item) + this.taxItem(item)
-            ).toFixed(2);
         },
         onSellCancel() {
             this.saleDate = "";

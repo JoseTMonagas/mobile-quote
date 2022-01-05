@@ -18,22 +18,22 @@
 </head>
 
 <body class="font-sans antialiased">
-    <table class="table">
+    <table class="table" style="font-size: 0.8em;">
         <tr>
             <th>Manufacturer</th>
             <th>Model</th>
             <th>Grade</th>
-            <th>IMEI:</th>
-            <th>Issues:</th>
+            <th>IMEI</th>
+            <th>Issues</th>
         </tr>
         <tr>
             <td>{{ $item["manufacturer"]  }}</td>
             <td>{{ $item["model"]  }}</td>
             <td>{{ $item["grade"]  }}</td>
-            <td>{{ $item["issues"] }}</td>
             <td>
                 {{ $item["imei"]  }}
             </td>
+            <td>{{ $item["issues"] }}</td>
         </tr>
         <tr>
             <td>

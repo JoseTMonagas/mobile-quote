@@ -13,8 +13,7 @@ class Item extends Model
         "date", "sale_id", "supplier", "manufacturer",
         "model", "colour", "battery", "grade",
         "issues", "cost", "imei", "selling_price",
-        "customer", "discount", "tax", "subtotal",
-        "profit", "sold"
+        "customer", "profit", "sold"
     ];
 
     public function sale()
