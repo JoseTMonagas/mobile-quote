@@ -424,7 +424,7 @@ export default {
                     if (response.status >= 200 && response.status < 400) {
                         let url = decodeURI(response.data);
                         window.open(url);
-                        this.onSellCancel();
+                        window.location.reload();
                     }
                 });
         },
