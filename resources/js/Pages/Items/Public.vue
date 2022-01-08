@@ -9,6 +9,16 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <header
+                        class="inline-flex flex-row justify-between items-center w-full px-4 my-2"
+                    >
+                        <button
+                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
+                            @click="onClickExport()"
+                        >
+                            EXPORT
+                        </button>
+                    </header>
                     <x-table :headers="headers" :items="inventory">
                         <template #select="{ item }">
                             <x-checkbox v-model="item.selected"></x-checkbox>
@@ -18,14 +28,6 @@
                         </template>
                         <template #selling_price="{ item }">
                             $ {{ item.selling_price }}
-                        </template>
-                        <template #issues="{item}">
-                            <span v-for="(issue, index) in item.issues">
-                                {{ issue.name }}
-                                <span v-if="index != item.issues.length - 1">
-                                    ,
-                                </span>
-                            </span>
                         </template>
                     </x-table>
                 </div>
@@ -79,6 +81,34 @@ export default {
             ],
             inventory: []
         };
+    },
+
+    methods: {
+        onClickExport() {
+            let workbook = XLSX.utils.book_new();
+            workbook.Props = {
+                Title: "Items",
+                CreatedDate: new Date()
+            };
+
+            workbook.SheetNames.push("Items");
+            const items = this.iventory.map(item => {
+                return {
+                    manufacturer: item.manufacturer,
+                    model: item.model,
+                    colour: item.colour,
+                    battery: `${item.battery} %`,
+                    grade: item.grade,
+                    issues: item.issues,
+                    imei: item.imei,
+                    price: item.selling_price
+                };
+            });
+            let worksheet = XLSX.utils.json_to_sheet(items);
+            workbook.Sheets["Items"] = worksheet;
+
+            XLSX.writeFile(workbook, "Items.xlsx");
+        }
     }
 };
 </script>
