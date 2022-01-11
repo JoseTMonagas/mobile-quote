@@ -117,6 +117,9 @@ Route::group(["prefix" => "inventory", "name" => "inventory."], function () {
 
         Route::post("sales", [SaleController::class, "store"])->name("sales.store");
         Route::get("sale/{sale}/receipt", [SaleController::class, "receipt"])->name("sales.receipt");
+
+        Route::get("report", [SaleController::class, "showReport"])->name("sales.report");
+        Route::post("report", [SaleController::class, "generateReport"])->name("sales.generate_report");
     });
 
     Route::get("public", [ItemController::class, "public"])->name("items.public");

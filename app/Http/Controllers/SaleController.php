@@ -7,8 +7,11 @@ use App\Models\Item;
 use App\Models\Sale;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SaleController extends Controller
 {
@@ -48,5 +51,65 @@ class SaleController extends Controller
                 'isRemoteEnabled' => 'true',
             ]);
         return $pdf->download("receipt.pdf");
+    }
+
+    /**
+     * Show report for Sale
+     */
+    public function showReport(): Response
+    {
+        return Inertia::render("Items/Report");
+    }
+
+    /**
+     *  Returns JSON listing all Item sold between a given
+     *  date range ($start - $end).
+     *
+     *  @param Request $request
+     *  @return JsonResponse
+     */
+    public function generateReport(Request $request): JsonResponse
+    {
+        $start = $request->start;
+        $end = strtotime("1 day", strtotime($request->end));
+
+        $sales = Sale::where([
+            ["created_at", ">=", $start],
+            ["created_at", "<=", date("Y-m-d", $end)]
+        ]);
+
+        if (Auth::user()->role != "OWNER") {
+            $store = Auth::user()->store;
+            $ids = $store->users->pluck("id");
+
+            switch (Auth::user()->role) {
+                case "ADMIN":
+                    $store = Auth::user()->store;
+                    $ids = $store->users->pluck("id");
+                    $sales->whereIn("user_id", $ids->toArray());
+                    break;
+                case "USER":
+                    $sales->whereIn("user_id", [Auth::id()]);
+                    break;
+                default:
+                    abort(403, "Unauthorized.");
+                    break;
+            }
+        }
+
+        $sales = $sales->get();
+
+        $response = [];
+        foreach ($sales as $sale) {
+            $tax = intval($sale->tax) / 100;
+            foreach ($sale->items as $item) {
+                $item["total"] = $item->selling_price + ($item->selling_price * $tax);
+                $item["profit"] = $item["total"] - $item->cost;
+
+                $response[] = $item;
+            }
+        }
+
+        return response()->json($response);
     }
 }
