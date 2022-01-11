@@ -7,7 +7,7 @@
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <header
                         class="inline-flex flex-row justify-between items-center w-full px-4 my-2"
@@ -19,7 +19,11 @@
                             EXPORT
                         </button>
                     </header>
-                    <x-table :headers="headers" :items="inventory">
+                    <x-table
+                        :headers="headers"
+                        :items="inventory"
+                        class="font-sm"
+                    >
                         <template #select="{ item }">
                             <x-checkbox v-model="item.selected"></x-checkbox>
                         </template>
