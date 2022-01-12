@@ -98,8 +98,9 @@ export default {
             { text: "Battery", value: "battery" },
             { text: "Grade", value: "grade" },
             { text: "Issues", value: "issues" },
+            { text: "IMEI", value: "imei" },
             { text: "Cost", value: "cost" },
-            { text: "Subtotal", value: "selling_price" },
+            { text: "Subtotal", value: "subtotal" },
             { text: "Total", value: "total" },
             { text: "Profit", value: "profit" }
         ];

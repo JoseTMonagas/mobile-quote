@@ -103,8 +103,14 @@ class SaleController extends Controller
         foreach ($sales as $sale) {
             $tax = intval($sale->tax) / 100;
             foreach ($sale->items as $item) {
-                $item["total"] = $item->selling_price + ($item->selling_price * $tax);
-                $item["profit"] = $item["total"] - $item->cost;
+                $cost = number_format(floatval($item->cost), 2);
+                $subtotal = number_format($item->selling_price, 2);
+                $total = number_format($item->selling_price + ($item->selling_price * $tax), 2);
+                $profit =  number_format($total - $item->cost, 2);
+                $item["cost"] = "$ $cost";
+                $item["subtotal"] = "$ $subtotal";
+                $item["total"] = "$ $total";
+                $item["profit"] = "$ $profit";
 
                 $response[] = $item;
             }
