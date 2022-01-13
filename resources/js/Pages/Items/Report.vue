@@ -44,7 +44,7 @@
         </div>
 
         <div class="py-6" v-if="report.length > 0">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-x-scroll shadow-xl sm:rounded-lg">
                     <button
                         class="shadow bg-blue-300 py-1 px-2"
@@ -52,7 +52,12 @@
                     >
                         Export to excel
                     </button>
-                    <x-table :headers="headers" :items="report" :key="keyCount">
+                    <x-table
+                        :headers="headers"
+                        :items="report"
+                        :key="keyCount"
+                        class="text-xs"
+                    >
                     </x-table>
                 </div>
             </div>
