@@ -103,6 +103,11 @@ class SaleController extends Controller
         foreach ($sales as $sale) {
             $tax = intval($sale->tax) / 100;
             foreach ($sale->items as $item) {
+                $battery = $item->battery;
+                if (is_numeric($item->battery)) {
+                    $battery = "$battery %";
+                }
+
                 $cost = number_format(floatval($item->cost), 2);
                 $subtotal = number_format($item->selling_price, 2);
                 $total = number_format($item->selling_price + ($item->selling_price * $tax), 2);
@@ -111,6 +116,7 @@ class SaleController extends Controller
                 $item["subtotal"] = "$ $subtotal";
                 $item["total"] = "$ $total";
                 $item["profit"] = "$ $profit";
+                $item["battery"] = $battery;
 
                 $response[] = $item;
             }
