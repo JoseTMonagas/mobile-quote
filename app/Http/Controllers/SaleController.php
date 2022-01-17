@@ -28,7 +28,6 @@ class SaleController extends Controller
         $sale = Sale::create($form);
         foreach ($form["items"] as $sale_item) {
             $sale_item["sale_id"] = $sale->id;
-            $sale_item["sold"] = Carbon::now();
             unset($sale_item["selected"]);
             $item = Item::find($sale_item["id"]);
             $item->update($sale_item);
@@ -103,6 +102,7 @@ class SaleController extends Controller
         foreach ($sales as $sale) {
             $tax = intval($sale->tax) / 100;
             foreach ($sale->items as $item) {
+
                 $battery = $item->battery;
                 if (is_numeric($item->battery)) {
                     $battery = "$battery %";
@@ -112,6 +112,7 @@ class SaleController extends Controller
                 $subtotal = number_format($item->selling_price, 2);
                 $total = number_format($item->selling_price + ($item->selling_price * $tax), 2);
                 $profit =  number_format($total - $item->cost, 2);
+
                 $item["cost"] = "$ $cost";
                 $item["subtotal"] = "$ $subtotal";
                 $item["total"] = "$ $total";
