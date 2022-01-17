@@ -96,6 +96,7 @@ export default {
         const role = this.$page.props.user.role;
         this.headers = [
             { text: "Sale Date", value: "sold" },
+            { text: "Supplier", value: "supplier" },
             { text: "Customer", value: "customer" },
             { text: "Manufacturer", value: "manufacturer" },
             { text: "Model", value: "model" },
