@@ -268,6 +268,16 @@
                         >
                             Quote Generator
                         </jet-responsive-nav-link>
+
+                        <jet-responsive-nav-link
+                            v-if="userRole == 'OWNER'"
+                            :href="route('items.index')"
+                            :active="route().current('items.index')"
+                            id="dashboard-link"
+                        >
+                            Inventory
+                        </jet-responsive-nav-link>
+
                         <jet-responsive-nav-link
                             v-if="userRole == 'OWNER' || userRole == 'ADMIN'"
                             :href="route('device.index')"
