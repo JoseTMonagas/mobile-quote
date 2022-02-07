@@ -7,6 +7,7 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 
 class ItemController extends Controller
 {
@@ -18,7 +19,7 @@ class ItemController extends Controller
     public function index(): \Inertia\Response
     {
         $context = [
-            'items' => Item::whereNull("sold")->get(),
+            'items' => Item::whereNull("sold")->whereNull("hold")->get(),
         ];
 
         return Inertia::render('Items/Index', $context);
@@ -32,7 +33,7 @@ class ItemController extends Controller
     public function public(): \Inertia\Response
     {
         $context = [
-            'items' => Item::whereNull("sold")->get(),
+            'items' => Item::whereNull("sold")->whereNull("hold")->get(),
         ];
 
         return Inertia::render('Items/Public', $context);
@@ -45,7 +46,7 @@ class ItemController extends Controller
      */
     public function list(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(Item::whereNull("sold")->get());
+        return response()->json(Item::whereNull("sold")->whereNull("hold")->get());
     }
 
 
@@ -151,5 +152,67 @@ class ItemController extends Controller
     {
         $pdf = PDF::loadView("label", compact("item"))->setOptions(["defaultFont" => "sans-serif", "isRemoteEnabled" => "true"])->setPaper("a6", "landscape");
         return $pdf->stream();
+    }
+
+
+    /**
+     * Puts on hold every given item.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function hold(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $ids = collect($request->input("data"))->pluck("id");
+        $items = Item::whereIn("id", $ids)->update(["hold" => Carbon::now()]);
+
+        return response()->json($items);
+    }
+
+
+    /**
+     * removes on hold every given item.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function unhold(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $ids = collect($request->input("data"))->pluck("id");
+        $items = Item::whereIn("id", $ids)->update(["hold" => null]);
+
+        return response()->json($items);
+    }
+
+    /**
+     * Return a list of resources on hold
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function viewHold(): \Inertia\Response
+    {
+        $context = [
+            'items' => Item::whereNull("sold")->whereNotNull("hold")->get(),
+        ];
+
+        return Inertia::render('Items/Hold', $context);
+    }
+
+    /**
+     * Removes a resource from a Sale and back into the inventory
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function returnItem(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $itemArray = $request->input("item");
+        $item = Item::find($itemArray["id"]);
+
+        if ($item->removeSale()) {
+            return response()->json(200);
+        } else {
+            return response()->json(500);
+        }
     }
 }

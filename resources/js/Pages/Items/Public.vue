@@ -48,6 +48,8 @@ import Button from "@/Jetstream/Button";
 import Checkbox from "@/Jetstream/Checkbox";
 import DialogModal from "@/Jetstream/DialogModal";
 
+import XLSX from "xlsx";
+
 export default {
     components: {
         PublicLayout,
@@ -96,7 +98,7 @@ export default {
             };
 
             workbook.SheetNames.push("Items");
-            const items = this.iventory.map(item => {
+            const items = this.inventory.map(item => {
                 return {
                     manufacturer: item.manufacturer,
                     model: item.model,

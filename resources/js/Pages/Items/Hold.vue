@@ -14,48 +14,21 @@
                     >
                         <nav-link
                             class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            :href="$route('items.create')"
-                            >CREATE NEW</nav-link
-                        >
-                        <nav-link
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             :href="$route('sales.report')"
                             >REPORTS</nav-link
                         >
                         <nav-link
                             class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             :href="$route('items.viewHold')"
-                            >ON HOLD</nav-link
+                            >VIEW</nav-link
                         >
 
                         <span> You have selected: {{ totalSelected }} </span>
-
-                        <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
-                            @click="onSell()"
-                        >
-                            SELL SELECTED
-                        </button>
-
-                        <button
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            @click="onEdit()"
-                        >
-                            EDIT SELECTED
-                        </button>
-
-                        <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
-                            @click="onDeleteMultiple()"
-                        >
-                            DELETE SELECTED
-                        </button>
-
                         <button
                             class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-yellow-400 rounded shadow"
-                            @click="onClickHold()"
+                            @click="onClickReturn()"
                         >
-                            PUT SELECTED ON HOLD
+                            RETURN SELECTED
                         </button>
 
                         <button
@@ -474,7 +447,7 @@ export default {
 
             XLSX.writeFile(workbook, "Items.xlsx");
         },
-        onClickHold() {
+        onClickReturn() {
             Swal.fire({
                 title: "Are you sure?",
                 icon: "warning",
@@ -486,7 +459,7 @@ export default {
                 if (result.isConfirmed) {
                     const items = this.inventory.filter(item => item.selected);
                     axios
-                        .put(this.$route("items.hold"), {
+                        .put(this.$route("items.unhold"), {
                             data: items
                         })
                         .catch(error => {
@@ -522,7 +495,7 @@ export default {
                                 response.status < 400
                             ) {
                                 Swal.fire({
-                                    title: "Items put on hold!",
+                                    title: "Items returned!",
                                     icon: "success"
                                 }).then(location.reload());
                             }

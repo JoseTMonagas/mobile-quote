@@ -109,6 +109,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 Route::group(["prefix" => "inventory", "name" => "inventory."], function () {
     Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete("items/obliterate", [ItemController::class, "obliterate"])->name("items.obliterate");
+        Route::put("items/hold", [ItemController::class, "hold"])->name("items.hold");
+        Route::get("items/hold", [ItemController::class, "viewHold"])->name("items.viewHold");
+        Route::put("items/unhold", [ItemController::class, "unhold"])->name("items.unhold");
+        Route::put("items/return", [ItemController::class, "returnItem"])->name("items.return");
         Route::post("items/correct", [ItemController::class, "correct"])->name("items.correct");
         Route::post("items/update", [ItemController::class, "update"])->name("items.update");
         Route::get("items/{item}/label", [ItemController::class, "label"])->name("items.label");

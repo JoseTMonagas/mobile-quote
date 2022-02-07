@@ -58,6 +58,20 @@
                         :key="keyCount"
                         class="text-xs"
                     >
+                        <template #actions="{ item }">
+                            <button
+                                class="px-2 py-1 border border-gray-400 rounded shadow"
+                                @click="onEdit(item)"
+                            >
+                                EDIT
+                            </button>
+                            <button
+                                class="px-2 py-1 border border-gray-400 rounded shadow"
+                                @click="onReturn(item)"
+                            >
+                                RETURN
+                            </button>
+                        </template>
                     </x-table>
                 </div>
             </div>
@@ -96,6 +110,7 @@ export default {
         const role = this.$page.props.user.role;
         this.headers = [
             { text: "Sale Date", value: "sold" },
+            { text: "Purchase Date", value: "date" },
             { text: "Supplier", value: "supplier" },
             { text: "Customer", value: "customer" },
             { text: "Manufacturer", value: "manufacturer" },
@@ -108,7 +123,8 @@ export default {
             { text: "Cost", value: "cost" },
             { text: "Subtotal", value: "subtotal" },
             { text: "Total", value: "total" },
-            { text: "Profit", value: "profit" }
+            { text: "Profit", value: "profit" },
+            { text: "Actions", value: "actions" }
         ];
     },
 
@@ -117,6 +133,65 @@ export default {
             this.start = "";
             this.end = "";
             this.report = [];
+        },
+        onEdit(item) {
+            let items = [item.id];
+            window.location.href = this.$route("items.edit", btoa(items));
+        },
+        onReturn(item) {
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    axios
+                        .put(this.$route("items.return"), {
+                            item
+                        })
+                        .catch(error => {
+                            if (error.response) {
+                                // The request was made and the server responded with a status code
+                                // that falls out of the range of 2xx
+                                Swal.fire({
+                                    title: "An Error has ocurred!",
+                                    text: error.response.data,
+                                    icon: "error"
+                                });
+                            } else if (error.request) {
+                                // The request was made but no response was received
+                                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                                // http.ClientRequest in node.js
+                                Swal.fire({
+                                    title: "An Error has ocurred!",
+                                    text: error.request,
+                                    icon: "error"
+                                });
+                            } else {
+                                // Something happened in setting up the request that triggered an Error
+                                Swal.fire({
+                                    title: "An Error has ocurred!",
+                                    text: error.message,
+                                    icon: "error"
+                                });
+                            }
+                        })
+                        .then(response => {
+                            if (
+                                response.status >= 200 &&
+                                response.status < 400
+                            ) {
+                                Swal.fire({
+                                    title: "Item returned!",
+                                    icon: "success"
+                                }).then();
+                            }
+                        });
+                }
+            });
         },
         onClickExport() {
             let workbook = XLSX.utils.book_new();
