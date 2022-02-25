@@ -8,22 +8,22 @@
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white shadow-xl sm:rounded-lg">
                     <header
-                        class="inline-flex flex-row justify-between items-center w-full px-4 my-2"
+                        class="flex flex-row flex-wrap justify-between items-center w-full px-4 my-2"
                     >
                         <nav-link
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             :href="$route('items.create')"
                             >CREATE NEW</nav-link
                         >
                         <nav-link
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             :href="$route('sales.report')"
                             >REPORTS</nav-link
                         >
                         <nav-link
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             :href="$route('items.viewHold')"
                             >ON HOLD</nav-link
                         >
@@ -31,72 +31,91 @@
                         <span> You have selected: {{ totalSelected }} </span>
 
                         <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
                             @click="onSell()"
                         >
                             SELL SELECTED
                         </button>
 
                         <button
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
                             @click="onEdit()"
                         >
                             EDIT SELECTED
                         </button>
 
                         <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
                             @click="onDeleteMultiple()"
                         >
                             DELETE SELECTED
                         </button>
 
                         <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-yellow-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-yellow-400 rounded shadow"
                             @click="onClickHold()"
                         >
                             PUT SELECTED ON HOLD
                         </button>
 
                         <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
+                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
                             @click="onClickExport()"
                         >
                             EXPORT
                         </button>
                     </header>
-
-                    <x-table
-                        :headers="headers"
-                        :items="inventory"
-                        class="text-xs"
-                    >
-                        <template #select="{ item }">
-                            <x-checkbox v-model="item.selected"></x-checkbox>
-                        </template>
-                        <template #battery="{ item }">
-                            <span v-if="Number.isNaN(parseFloat(item.battery))">
-                                {{ item.battery }}
-                            </span>
-                            <span v-else> {{ item.battery }} % </span>
-                        </template>
-                        <template #cost="{ item }">
-                            <span v-if="item.cost"> $ {{ item.cost }} </span>
-                        </template>
-                        <template #selling_price="{ item }">
-                            <span v-if="item.selling_price">
-                                $ {{ item.selling_price }}
-                            </span>
-                        </template>
-                        <template #actions="{ item }">
-                            <a
-                                class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                                :href="$route('items.label', item.id)"
-                            >
-                                LABEL
-                            </a>
-                        </template>
-                    </x-table>
+                    <div class="overflow-x-auto">
+                        <div class="min-w-full inline-block py-2">
+                            <div class="overlow-x-auto">
+                                <x-table
+                                    :headers="headers"
+                                    :items="inventory"
+                                    class="text-xs"
+                                >
+                                    <template #select="{ item }">
+                                        <x-checkbox
+                                            v-model="item.selected"
+                                        ></x-checkbox>
+                                    </template>
+                                    <template #battery="{ item }">
+                                        <span
+                                            v-if="
+                                                Number.isNaN(
+                                                    parseFloat(item.battery)
+                                                )
+                                            "
+                                        >
+                                            {{ item.battery }}
+                                        </span>
+                                        <span v-else>
+                                            {{ item.battery }} %
+                                        </span>
+                                    </template>
+                                    <template #cost="{ item }">
+                                        <span v-if="item.cost">
+                                            $ {{ item.cost }}
+                                        </span>
+                                    </template>
+                                    <template #selling_price="{ item }">
+                                        <span v-if="item.selling_price">
+                                            $ {{ item.selling_price }}
+                                        </span>
+                                    </template>
+                                    <template #actions="{ item }">
+                                        <a
+                                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
+                                            :href="
+                                                $route('items.label', item.id)
+                                            "
+                                        >
+                                            LABEL
+                                        </a>
+                                    </template>
+                                </x-table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
