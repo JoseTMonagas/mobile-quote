@@ -111,6 +111,17 @@
                     {{ items.length }} items
                 </small>
             </span>
+            <span class="mx-1">
+                <label for="">Elements per page:</label>
+                <select
+                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none w-14"
+                    v-model="elementsPerPage"
+                >
+                    <option :value="10" selected>10</option>
+                    <option :value="30">30</option>
+                    <option :value="50">50</option>
+                </select>
+            </span>
             <slot name="footer"></slot>
         </footer>
     </section>
@@ -141,7 +152,7 @@ export default {
                 this.rows = this.items;
             } else {
                 this.rows = this.items.filter(item => {
-                    const row = JSON.stringify(item).toUpperCase()
+                    const row = JSON.stringify(item).toUpperCase();
                     return row.includes(newFilter.toUpperCase());
                 });
             }
