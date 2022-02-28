@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Sale;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -113,6 +114,9 @@ class SaleController extends Controller
                 $total = number_format($item->selling_price + ($item->selling_price * $tax), 2);
                 $profit =  number_format($total - $item->cost, 2);
 
+                $sold = new DateTime($item->sold);
+
+                $item["sold"] = $sold->format("Y-m-d");
                 $item["cost"] = "$ $cost";
                 $item["subtotal"] = "$ $subtotal";
                 $item["total"] = "$ $total";
