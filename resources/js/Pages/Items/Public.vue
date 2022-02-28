@@ -19,21 +19,29 @@
                             EXPORT
                         </button>
                     </header>
-                    <x-table
-                        :headers="headers"
-                        :items="inventory"
-                        class="font-sm"
-                    >
-                        <template #select="{ item }">
-                            <x-checkbox v-model="item.selected"></x-checkbox>
-                        </template>
-                        <template #battery="{ item }">
-                            {{ item.battery }} %
-                        </template>
-                        <template #selling_price="{ item }">
-                            $ {{ item.selling_price }}
-                        </template>
-                    </x-table>
+                    <div class="overflow-x-auto">
+                        <div class="min-w-full inline-block py-2">
+                            <div class="overflow-x-auto">
+                                <x-table
+                                    :headers="headers"
+                                    :items="inventory"
+                                    class="font-sm"
+                                >
+                                    <template #select="{ item }">
+                                        <x-checkbox
+                                            v-model="item.selected"
+                                        ></x-checkbox>
+                                    </template>
+                                    <template #battery="{ item }">
+                                        {{ item.battery }} %
+                                    </template>
+                                    <template #selling_price="{ item }">
+                                        $ {{ item.selling_price }}
+                                    </template>
+                                </x-table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

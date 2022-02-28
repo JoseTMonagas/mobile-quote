@@ -67,7 +67,7 @@
                     </header>
                     <div class="overflow-x-auto">
                         <div class="min-w-full inline-block py-2">
-                            <div class="overlow-x-auto">
+                            <div class="overflow-x-auto">
                                 <x-table
                                     :headers="headers"
                                     :items="inventory"
