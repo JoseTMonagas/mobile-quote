@@ -163,67 +163,78 @@
                         />
                     </div>
                 </header>
-                <table class="min-w-full">
-                    <thead class="min-w-full bg-white border-b">
-                        <tr>
-                            <th
-                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
-                            >
-                                Device
-                            </th>
-                            <th
-                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
-                            >
-                                Issues
-                            </th>
-                            <th
-                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
-                            >
-                                IMEI
-                            </th>
-                            <th
-                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-3/12"
-                            >
-                                Selling Price
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="min-w-full">
-                        <template v-if="saleItems.length > 0">
-                            <tr v-for="item in saleItems" class="border-b">
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
-                                >
-                                    {{ item.model }}
-                                </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
-                                >
-                                    {{ item.issues }}
-                                </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
-                                >
-                                    {{ item.imei }}
-                                </td>
-                                <td class="whitespace-nowrap text-left w-3/12">
-                                    <input
-                                        class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-xs border border-gray-400 outline-none focus:outline-none w-full"
-                                        type="number"
-                                        v-model="item.selling_price"
-                                    />
-                                </td>
-                            </tr>
-                        </template>
-                        <template v-else>
-                            <tr>
-                                <td colspan="3">
-                                    No devices added to this quote!
-                                </td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <div class="min-w-full inline-block py-2">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead class="min-w-full bg-white border-b">
+                                    <tr>
+                                        <th
+                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
+                                        >
+                                            Device
+                                        </th>
+                                        <th
+                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
+                                        >
+                                            Issues
+                                        </th>
+                                        <th
+                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-2/12"
+                                        >
+                                            IMEI
+                                        </th>
+                                        <th
+                                            class="text-sm font-medium text-gray-900 px-6 py-4 text-left w-3/12"
+                                        >
+                                            Selling Price
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="min-w-full">
+                                    <template v-if="saleItems.length > 0">
+                                        <tr
+                                            v-for="item in saleItems"
+                                            class="border-b"
+                                        >
+                                            <td
+                                                class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
+                                            >
+                                                {{ item.model }}
+                                            </td>
+                                            <td
+                                                class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
+                                            >
+                                                {{ item.issues }}
+                                            </td>
+                                            <td
+                                                class="px-6 py-4 whitespace-nowrap text-left text-xs w-2/12"
+                                            >
+                                                {{ item.imei }}
+                                            </td>
+                                            <td
+                                                class="whitespace-nowrap text-left w-3/12"
+                                            >
+                                                <input
+                                                    class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white rounded text-xs border border-gray-400 outline-none focus:outline-none w-full"
+                                                    type="number"
+                                                    v-model="item.selling_price"
+                                                />
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td colspan="3">
+                                                No devices added to this quote!
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 <footer class="inline-flex flex-col w-full text-right mt-2">
                     <span class="mt-1"> Subtotal: $ {{ subtotal }}</span>
                     <span class="mt-1"> Tax: $ {{ flatTax }}</span>
