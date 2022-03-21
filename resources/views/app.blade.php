@@ -14,6 +14,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset(mix('css/app.css')) }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
     <!-- Scripts -->

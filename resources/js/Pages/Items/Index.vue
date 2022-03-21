@@ -3,66 +3,87 @@
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Items: Index
+                <span class="font-medium mx-8">|</span>
+                <button
+                    class="inline-flex items-center"
+                    @click="onClickExport()"
+                >
+                    Export
+                    <span class="material-icons">
+                        file_download
+                    </span>
+                </button>
             </h2>
         </template>
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8">
+                <div class="flex flex-row -mb-2 ml-8">
+                    <nav-link
+                        class="px-2 py-1 bg-white rounded-t-lg"
+                        :href="$route('items.index')"
+                        :active="route().current('items.index')"
+                        >Active Inventory</nav-link
+                    >
+                    <nav-link
+                        class="px-2 py-1 mx-1 bg-white rounded-t-lg"
+                        :href="$route('items.viewHold')"
+                        :active="route().current('items.viewHold')"
+                        >On Hold</nav-link
+                    >
+                    <nav-link
+                        class="px-2 py-1 bg-white rounded-t-lg"
+                        :href="$route('sales.report')"
+                        :active="route().current('sales.report')"
+                        >Sold</nav-link
+                    >
+                </div>
                 <div class="bg-white shadow-xl sm:rounded-lg">
                     <header
-                        class="flex flex-row flex-wrap justify-between items-center w-full px-4 my-2"
+                        class="flex flex-row flex-wrap justify-end items-center w-full px-4 my-2"
                     >
-                        <nav-link
-                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            :href="$route('items.create')"
-                            >CREATE NEW</nav-link
-                        >
-                        <nav-link
-                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            :href="$route('sales.report')"
-                            >REPORTS</nav-link
-                        >
-                        <nav-link
-                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            :href="$route('items.viewHold')"
-                            >ON HOLD</nav-link
-                        >
+                        <span class="mr-4">
+                            You have selected: {{ totalSelected }}
+                        </span>
 
-                        <span> You have selected: {{ totalSelected }} </span>
+                        <nav-link
+                            class="md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 rounded shadow"
+                            :href="$route('items.create')"
+                        >
+                            <span class="material-icons">add</span>
+                            Add Device
+                        </nav-link>
 
                         <button
-                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-green-400 rounded shadow"
+                            class="md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 rounded shadow"
                             @click="onSell()"
                         >
-                            SELL SELECTED
+                            Sell ($)
                         </button>
 
                         <button
-                            class="md:ml-3 md:mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            @click="onEdit()"
-                        >
-                            EDIT SELECTED
-                        </button>
-
-                        <button
-                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-red-400 rounded shadow"
-                            @click="onDeleteMultiple()"
-                        >
-                            DELETE SELECTED
-                        </button>
-
-                        <button
-                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-yellow-400 rounded shadow"
+                            class="md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 rounded shadow"
                             @click="onClickHold()"
                         >
-                            PUT SELECTED ON HOLD
+                            Place on Hold
                         </button>
 
                         <button
-                            class="md:ml-3 md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
-                            @click="onClickExport()"
+                            class="md:mt-2 px-1 border border-gray-400 rounded shadow"
+                            @click="onEdit()"
                         >
-                            EXPORT
+                            <span class="material-icons">
+                                edit
+                            </span>
+                        </button>
+
+                        <button
+                            class="md:mt-2 px-1 border border-gray-400 rounded shadow"
+                            @click="onDeleteMultiple()"
+                        >
+                            <span class="material-icons">
+                                delete
+                            </span>
                         </button>
                     </header>
                     <div class="overflow-x-auto">
@@ -507,6 +528,9 @@ export default {
         onClickHold() {
             Swal.fire({
                 title: "Are you sure?",
+                text: "You can assign a Customer to these items.",
+                input: "text",
+                inputLabel: "Customer name:",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -515,9 +539,11 @@ export default {
             }).then(result => {
                 if (result.isConfirmed) {
                     const items = this.inventory.filter(item => item.selected);
+                    const customer = result.value;
                     axios
                         .put(this.$route("items.hold"), {
-                            data: items
+                            data: items,
+                            customer: customer
                         })
                         .catch(error => {
                             if (error.response) {

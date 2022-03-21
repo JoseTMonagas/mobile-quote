@@ -73,10 +73,19 @@ class SaleController extends Controller
         $start = $request->start;
         $end = strtotime("1 day", strtotime($request->end));
 
-        $sales = Sale::where([
-            ["created_at", ">=", $start],
-            ["created_at", "<=", date("Y-m-d", $end)]
-        ]);
+        $items = Item::where([
+            ["sold", ">=", $start],
+            ["sold", "<=", date("Y-m-d", $end)],
+        ])->whereNotNull("sale_id")
+            ->select("sale_id")
+            ->distinct()
+            ->get();
+
+        $sale_pks = $items->map(function ($item) {
+            return $item->sale_id;
+        })->toArray();
+
+        $sales = Sale::whereIn("id", $sale_pks);
 
         if (Auth::user()->role != "OWNER") {
             $store = Auth::user()->store;

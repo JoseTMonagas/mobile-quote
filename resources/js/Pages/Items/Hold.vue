@@ -3,39 +3,60 @@
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Items: Index
+                <span class="font-medium mx-8">|</span>
+                <button
+                    class="inline-flex items-center"
+                    @click="onClickExport()"
+                >
+                    Export
+                    <span class="material-icons">
+                        file_download
+                    </span>
+                </button>
             </h2>
         </template>
 
         <div class="py-12">
             <div class="mx-auto sm:px-6 lg:px-8">
+                <div class="flex flex-row -mb-1 ml-8">
+                    <nav-link
+                        class="px-2 py-1 bg-white rounded-t-lg"
+                        :href="$route('items.index')"
+                        :active="route().current('items.index')"
+                        >Active Inventory</nav-link
+                    >
+                    <nav-link
+                        class="px-2 py-1 mx-1 bg-white rounded-t-lg"
+                        :href="$route('items.viewHold')"
+                        :active="route().current('items.viewHold')"
+                        >On Hold</nav-link
+                    >
+                    <nav-link
+                        class="px-2 py-1 bg-white rounded-t-lg"
+                        :href="$route('sales.report')"
+                        :active="route().current('sales.report')"
+                        >Sold</nav-link
+                    >
+                </div>
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <header
-                        class="inline-flex flex-row justify-between items-center w-full px-4 my-2"
+                        class="inline-flex flex-row justify-end items-center w-full px-4 my-2"
                     >
-                        <nav-link
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            :href="$route('sales.report')"
-                            >REPORTS</nav-link
-                        >
-                        <nav-link
-                            class="ml-3 mt-2 px-2 py-1 border border-gray-400 rounded shadow"
-                            :href="$route('items.viewHold')"
-                            >VIEW</nav-link
-                        >
-
-                        <span> You have selected: {{ totalSelected }} </span>
+                        <span class="mr-2">
+                            You have selected: {{ totalSelected }}
+                        </span>
                         <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-yellow-400 rounded shadow"
-                            @click="onClickReturn()"
+                            class="md:mt-2 px-2 py-1 text-gray-800 border border-gray-400 rounded shadow"
+                            @click="onSell()"
                         >
-                            RETURN SELECTED
+                            Sell ($)
                         </button>
 
                         <button
-                            class="ml-3 mt-2 px-2 py-1 text-gray-800 border border-gray-400 bg-blue-400 rounded shadow"
-                            @click="onClickExport()"
+                            class="mt-2 px-2 py-1 text-gray-800 border border-gray-400 rounded shadow"
+                            @click="onClickReturn()"
                         >
-                            EXPORT
+                            Return Selected
                         </button>
                     </header>
 
@@ -272,6 +293,7 @@ export default {
                 { text: "Date", value: "date" },
                 { text: "Supplier", value: "supplier" },
                 { text: "Manufacturer", value: "manufacturer" },
+                { text: "Customer", value: "customer" },
                 { text: "Model", value: "model" },
                 { text: "Colour", value: "colour" },
                 { text: "Battery", value: "battery" },

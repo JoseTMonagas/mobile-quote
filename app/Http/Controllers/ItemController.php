@@ -164,7 +164,8 @@ class ItemController extends Controller
     public function hold(Request $request): \Illuminate\Http\JsonResponse
     {
         $ids = collect($request->input("data"))->pluck("id");
-        $items = Item::whereIn("id", $ids)->update(["hold" => Carbon::now()]);
+        $customer = $request->input("customer");
+        $items = Item::whereIn("id", $ids)->update(["hold" => Carbon::now(), "customer" => $customer]);
 
         return response()->json($items);
     }

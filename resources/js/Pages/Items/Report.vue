@@ -8,6 +8,26 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex flex-row -mb-1 ml-8">
+                    <nav-link
+                        class="px-2 py-1 bg-white rounded-t-lg"
+                        :href="$route('items.index')"
+                        :active="route().current('items.index')"
+                        >Active Inventory</nav-link
+                    >
+                    <nav-link
+                        class="px-2 py-1 mx-1 bg-white rounded-t-lg"
+                        :href="$route('items.viewHold')"
+                        :active="route().current('items.viewHold')"
+                        >On Hold</nav-link
+                    >
+                    <nav-link
+                        class="px-2 py-1 bg-white rounded-t-lg"
+                        :href="$route('sales.report')"
+                        :active="route().current('sales.report')"
+                        >Sold</nav-link
+                    >
+                </div>
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <form-section @submitted="onFormSubmit">
                         <template #title>
@@ -84,12 +104,14 @@ import AppLayout from "@/Layouts/AppLayout";
 import Table from "@/Components/Table";
 import Button from "@/Jetstream/Button";
 import FormSection from "@/Jetstream/FormSection";
+import NavLink from "@/Jetstream/NavLink";
 
 import XLSX from "xlsx";
 
 export default {
     components: {
         AppLayout,
+        NavLink,
         FormSection,
         "x-table": Table,
         "x-button": Button
