@@ -32,7 +32,7 @@ class CreateItemsTable extends Migration
             $table->unsignedFloat("discount")->nullable();
             $table->unsignedFloat("tax")->nullable();
             $table->unsignedFloat("subtotal")->nullable();
-            $table->unsignedFloat("profit")->nullable();
+            $table->string("profit")->nullable();
             $table->timestamps();
         });
     }
