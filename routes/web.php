@@ -11,6 +11,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get("/", [QuoteController::class, "create"])
         ->name("quotes.create");
+    Route::get("dashboard", Dashboard::class)->name("dashboard");
+
     Route::get("bulk", [QuoteController::class, "bulkCreate"])->name("bulkQuotes.create");
     Route::get("quote/{quote}/receipt", [QuoteController::class, "receipt"])
         ->name("quotes.receipt");
@@ -37,12 +40,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::delete("quotes/{quote}", [QuoteController::class, "destroy"])->name("quotes.destroy");
 
-
-    Route::get("dashboard", function () {
-        return redirect()->route("quotes.create");
-    });
-
-    Route::inertia("dashboard", "Dashboard")->name("dashboard");
 
     Route::resource("device", DeviceController::class)
         ->except(["show"]);
