@@ -21,11 +21,11 @@ class Dashboard extends Controller
         $devicesInInventory = Item::whereNull("sold")->count();
         $tradesThisMonth = Item::whereBetween("date", [$startOfMonth, $endOfMonth])->count();
         $soldThisMonth = Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->count();
-        $costSoldThisMonth = Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("cost");
-        $inventoryValue = Item::whereNull("sold")->sum("cost");
-        $saleValue = Item::whereNull("sold")->sum("selling_price");
-        $soldValueThisMonth = Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("subtotal");
-        $profitThisMonth = Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("profit");
+        $costSoldThisMonth = round(Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("cost"));
+        $inventoryValue = round(Item::whereNull("sold")->sum("cost"));
+        $saleValue = round(Item::whereNull("sold")->sum("selling_price"));
+        $soldValueThisMonth = round(Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("subtotal"));
+        $profitThisMonth = round(Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("profit"));
 
         $context = [
             "devicesInInventory" => $devicesInInventory,
