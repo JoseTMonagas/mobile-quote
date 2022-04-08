@@ -22,7 +22,7 @@
                     <div
                         class="bg-white overflow-hidden shadow-xl sm:rounded-lg flex flex-col items-center py-2"
                     >
-                        <strong>Trade-ins this month</strong>
+                        <strong>Devices Added this Month</strong>
                         <span>{{ tradesThisMonth }}</span>
                     </div>
 

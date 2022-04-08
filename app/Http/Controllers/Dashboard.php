@@ -14,7 +14,7 @@ class Dashboard extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function __invoke()
     {
         $startOfMonth = date("Y-m-01");
         $endOfMonth = date("Y-m-d");
@@ -24,7 +24,7 @@ class Dashboard extends Controller
         $costSoldThisMonth = round(Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("cost"));
         $inventoryValue = round(Item::whereNull("sold")->sum("cost"));
         $saleValue = round(Item::whereNull("sold")->sum("selling_price"));
-        $soldValueThisMonth = round(Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("subtotal"));
+        $soldValueThisMonth = round(Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("selling_price"));
         $profitThisMonth = round(Item::whereBetween("sold", [$startOfMonth, $endOfMonth])->sum("profit"));
 
         $context = [
